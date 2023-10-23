@@ -1,67 +1,115 @@
 import pandas as pd    
+from typing import List
 
-def get_column(dataframe: pd.DataFrame, column_name) -> pd.Series:
+def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
     if column_name not in dataframe.columns:
         raise Exception("Error: column name {column_name} is not in the provided DataFrame.")
     else:
         column = pd.Series(dataframe[column_name])
         return column
     
-    
 class DataFrameInfo():
     def __init__(self, df: pd.DataFrame):
         self.df = df
-        self.column_names = df.columns
         
     def describe_all(self):
+        """Returns the count, mean, std, 25%/50%/75% quartiles, and maximum for every column, as a DataFrame."""
+        
         description = self.df.describe()
         return description
     
     def show_all_column_dtypes(self):
+        """Returns a Series of data types indexed with the column names."""
+        
         return self.df.dtypes
 
-    def describe_column(self, column_name):
+    def describe_column(self, column_name: str):
+        """Returns the count, mean, std, 25%/50%/75% quartiles, and maximum for the given column, as a Series."""
+        
         description = get_column(self.df, column_name).describe()
         return description
     
-    def get_column_median(self, column_name):
+    def get_column_median(self, column_name: str) -> float:
+        """Returns the median value of the column whose name matches the column_name parameter."""
         median = get_column(self.df, column_name).median()
         return median
     
-    def get_column_mean(self, column_name):
+    def get_column_mean(self, column_name: str) -> float:
+        """Returns the mean value of the column whose name matches the column_name parameter."""
+        
         mean = get_column(self.df, column_name).mean()
         return mean
     
-    def get_column_mode(self, column_name):
+    def get_column_mode(self, column_name: str) -> pd.Series:
+        """Returns the mode of the column whose name matches the column_name parameter."""
+        
         mode = get_column(self.df, column_name).mode()
         return mode
     
-    def get_column_standard_deviation(self, column_name):
+    def get_column_standard_deviation(self, column_name: str) -> float:
+        """Returns the standard deviation of the column whose name matches the column_name parameter."""
+        
         std = get_column(self.df, column_name).std()
         return std
     
-    # def get_distinct_categories_in_colum(self, column_name):
-    #     column = get_column(self.df, column_name)
-    #     category_columns = self.get_categorical_columns().columns
-    #     if column not in category_columns:
-    #         raise Exception(f"The column {column_name} is not of type category.")
-    #     else:
-    #         # column.
+    def get_distinct_categories_in_colum(self, column_name: str) -> List:
+        """Returns a list of unique values in the given column, if that column is of type 'category'."""
+
+        # This checks if the column exists and assigns it to column
+        column = get_column(self.df, column_name)
+        
+        # This gets the names of the columns which are of type 'category' to ensure the provided column_name column is not of a different type
+        category_columns = self.get_categorical_columns().columns
+        
+        if column_name not in list(category_columns):
+            raise Exception(f"The column {column_name} is not of type category.")
+        else:
+            unique_values = list(column.unique())
+            return unique_values
         
     
-    def get_categorical_columns(self):
+    def get_categorical_columns(self) -> pd.DataFrame:
+        """Extracts only the columns of the DataFrame whose type is 'category'."""
+        
         categorical_cols = self.df.select_dtypes("category")
         return categorical_cols
     
-    def print_dataframe_shape(self):
-        return self.df.shape
-
-
+    def print_dataframe_shape(self) -> tuple[int, int]:
+        """Returns the shape of the DataFrame."""
         
-"""
-    Describe all columns in the DataFrame to check their data types
-    Extract statistical values: median, standard deviation and mean from the columns and the DataFrame
-    Count distinct values in categorical columns
-    Print out the shape of the DataFrame
-    Generate a count/percentage count of NULL values in each column
-"""
+        return self.df.shape
+    
+    def count_nulls_in_data_frame(self) -> pd.Series:
+        """Returns a series showing the null count for every column in the dataframe."""
+        
+        null_series = self.df.isnull().sum()
+        return null_series
+    
+    def percentage_of_nulls_in_data_frame(self, precision=2) -> pd.Series:
+        """Returns a series showing the percentage of null values for every column in the dataframe.
+        
+            Args: 
+                precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.
+        """        
+        
+        null_percentages = round(self.df.isnull().sum() * 100 / len(self.df), precision)
+        return null_percentages
+
+    def count_nulls_in_column(self, column_name: str) -> int:
+        """Return the total number of null values in the series."""
+        
+        column = get_column(self.df, column_name)
+        null_count = column.isnull().sum()
+        return null_count
+    
+    def percentage_of_nulls_in_column(self, column_name: str, precision=2) -> float:
+        """Return the proportion of null values in the series as a percentage.
+        
+            Args:
+                column_name (str): the name of the column to be accessed 
+                precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.
+        """
+        
+        column = get_column(self.df, column_name)
+        null_percentage = round(column.isnull().sum() * 100 / len(column), precision)
+        return null_percentage

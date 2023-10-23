@@ -1,14 +1,22 @@
-import yaml 
 import pandas as pd
+import yaml 
 from sqlalchemy import Engine, create_engine
 
 def load_credentials():
     """Extract credentials from the yaml file and return its contents as a dict"""
+
+    try:
+        with open('credentials.yaml', 'r') as f:
+            data = yaml.safe_load(f)
+            return data
+    except IOError:
+        print("IOError: 'credentials.yaml' not found or could not be opened.")
+        return None
     
-    with open('credentials.yaml', 'r') as f:
-        data = yaml.safe_load(f)
-    return data
+def save_to_csv(dataframe: pd.DataFrame, filepath: str):
+    """Save Pandas DataFrame to a CSV file."""
     
+    dataframe.to_csv(filepath, sep=',')
 
 class RDSDatabaseConnector():
     """Connects to an RDS database, extracts data as a DataFrame and saves to CSV.
@@ -19,8 +27,6 @@ class RDSDatabaseConnector():
     Methods:
         __init__(credentials):
             Initializes the RDS engine, extracts data as DF and saves to CSV.
-        save_to_csv(dataframe):
-            Saves a pandas DataFrame as a CSV file.
         extract_sql_as_df(engine):
             Uses engine to get SQL data from table as a pandas DataFrame.
         init_SQL_alchemy_engine(credentials):
@@ -37,12 +43,7 @@ class RDSDatabaseConnector():
         dataframe = self.extract_table_as_dataframe(engine)
         
         # save the dataframe into a csv file
-        self.save_to_csv(dataframe)
-
-    def save_to_csv(self, dataframe: pd.DataFrame):
-        """Save Pandas DataFrame to a CSV file."""
-        
-        dataframe.to_csv("../loan_payments.csv", sep=',')
+        save_to_csv(dataframe, "../loan_payments.csv")
             
     def extract_table_as_dataframe(self, engine: Engine):
         """Extract SQL data and return it as a Pandas DataFrame."""
@@ -72,5 +73,7 @@ class RDSDatabaseConnector():
         
         return engine 
     
-credentials_dict = load_credentials()
-RDSDatabaseConnector(credentials_dict)
+if __name__ == '__main__':
+    credentials_dict = load_credentials()
+    RDSDatabaseConnector(credentials_dict)
+    

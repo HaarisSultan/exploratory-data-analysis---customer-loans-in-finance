@@ -24,6 +24,13 @@ class DataFrameInfo():
         # Give the methods access to the dataframe to avoid extensive use of parameters 
         self.df = df
         
+    def get_columns_with_nulls(self):
+        """Returns a DataFrame containing only columns which have null values."""
+        
+        # only_nulls = self.df[(self.df.isnull() == True)]
+        only_nulls = self.df.loc[:, self.df.isna().any()]
+        return only_nulls
+    
     def describe_all(self):
         """Returns the count, mean, std, 25%/50%/75% quartiles, and maximum for every column, as a DataFrame."""
         
@@ -104,21 +111,38 @@ class DataFrameInfo():
         
         return self.df.shape
     
-    def count_nulls_in_data_frame(self) -> pd.Series:
+    def count_nulls_in_data_frame(self, dataframe=None) -> pd.Series:
         """Returns a series showing the null count for every column in the dataframe."""
         
-        null_series = self.df.isnull().sum()
-        return null_series
+        if dataframe is None:
+            # Apply to the entire dataframe
+            null_series = self.df.isnull().sum()
+            return null_series
+        else:
+            dataframe = pd.DataFrame(dataframe)
+            # Apply to the provided dataframe 
+            null_series = dataframe.isnull().sum()
+            return null_series
+        
+        
     
-    def percentage_of_nulls_in_data_frame(self, precision=2) -> pd.Series:
+    def percentage_of_nulls_in_data_frame(self, dataframe=None, precision=2) -> pd.Series:
         """Returns a series showing the percentage of null values for every column in the dataframe.
         
             Args: 
                 precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.
+                dataframe: optinal argument to find the null percentage on a provided dataframe, e.g. a subset of the dataframe you know has nulls in.
         """        
+        if dataframe is None:
+            # Apply to the entire dataframe
+            null_percentages = round(self.df.isnull().sum() * 100 / len(self.df), precision)
+            return null_percentages
+        else:
+            dataframe = pd.DataFrame(dataframe)
+            # Apply to the provided dataframe 
+            null_percentages = round(dataframe.isnull().sum() * 100 / len(dataframe), precision)
+            return null_percentages
         
-        null_percentages = round(self.df.isnull().sum() * 100 / len(self.df), precision)
-        return null_percentages
 
     def count_nulls_in_column(self, column_name: str) -> int:
         """Return the total number of null values in the series."""

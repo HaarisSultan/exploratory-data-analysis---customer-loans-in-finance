@@ -22,7 +22,11 @@ def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
 class DataFrameInfo():
     def __init__(self, df: pd.DataFrame):
         # Give the methods access to the dataframe to avoid extensive use of parameters 
-        self.df = df
+        self.df = df            
+        
+    def contains_nulls(self, column_name) -> bool:
+        column = get_column(self.df, column_name)
+        return column.isnull().sum() != 0
         
     def get_columns_with_nulls(self):
         """Returns a DataFrame containing only columns which have null values."""

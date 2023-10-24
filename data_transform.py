@@ -39,6 +39,9 @@ def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
 class DataTransform():
     def __init__(self, dataframe: pd.DataFrame):
         self.df = dataframe
+    
+    def get_numeric_columns_from_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
+        return dataframe.select_dtypes(include=[np.number]) 
         
     def convert_float64_columns_into_int64s(self, column_names: List[str]):
         """Convert the specified float64 columns in a DataFrame into int64.
@@ -68,9 +71,11 @@ class DataTransform():
                 dtype: object
         """
         
-        for col_name in column_names:
-            column = get_column(self.df, column_name=col_name)
-            column = column.fillna(0).astype(np.int64)
+        for column_name in column_names:
+            column = get_column(self.df, column_name=column_name)
+
+            self.df[column_name] = column.astype("Int64")
+            # self.df[column_name] = column.fillna(0).astype(np.int64)
     
     
     def convert_object_columns_into_categories(self, column_names: List[str]):
@@ -102,7 +107,7 @@ class DataTransform():
         """
         for column_name in column_names:
             column = get_column(self.df, column_name=column_name)
-            column = column.astype("category")
+            self.df[column_name] = column.astype("category")
                 
     
     def convert_object_columns_to_date(self, column_names: List[str], current_format: str):
@@ -139,7 +144,7 @@ class DataTransform():
         """
         for column_name in column_names:
             column = get_column(self.df, column_name=column_name)
-            column = pd.to_datetime(column, format=current_format)        
+            self.df[column_name]= pd.to_datetime(column, format=current_format)        
     
     def object_to_date(self, column_name: str, current_format: str):
         """Convert object column to datetime.

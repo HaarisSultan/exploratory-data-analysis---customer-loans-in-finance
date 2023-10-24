@@ -2,14 +2,26 @@ import pandas as pd
 from typing import List
 
 def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
+    """Returns the column with name equal to the column_name parameter, from the given dataframe, provided the column exists.
+    
+        If such a column does not exist, an Exception is raised. The result is a pandas Series object.
+    
+        Args: 
+            dataframe (pd.DataFrame): the dataframe from which to extract the column.
+            column_name (str): the name of the column to extract 
+    """
+    
     if column_name not in dataframe.columns:
-        raise Exception("Error: column name {column_name} is not in the provided DataFrame.")
+        # Alert the user that there is no such column
+        raise Exception("Error: The column named {column_name} is not in the provided DataFrame.")
     else:
+        # Enforce the Series type so python knows which methods are availble to the resultant column 
         column = pd.Series(dataframe[column_name])
         return column
     
 class DataFrameInfo():
     def __init__(self, df: pd.DataFrame):
+        # Give the methods access to the dataframe to avoid extensive use of parameters 
         self.df = df
         
     def describe_all(self):
@@ -24,7 +36,10 @@ class DataFrameInfo():
         return self.df.dtypes
 
     def describe_column(self, column_name: str):
-        """Returns the count, mean, std, 25%/50%/75% quartiles, and maximum for the given column, as a Series."""
+        """For numerical columns, this returns the count, mean, std, 25%/50%/75% quartiles, and maximum for the given column, as a Series.
+        
+        For other types, it will return the count, number of unique values, the mode (top), and the frequency of the most common value.
+        """
         
         description = get_column(self.df, column_name).describe()
         return description
@@ -34,10 +49,15 @@ class DataFrameInfo():
         median = get_column(self.df, column_name).median()
         return median
     
-    def get_column_mean(self, column_name: str) -> float:
-        """Returns the mean value of the column whose name matches the column_name parameter."""
+    def get_column_mean(self, column_name: str, precision=2) -> float:
+        """Returns the mean value of the column whose name matches the column_name parameter.
+                
+            Args: 
+                precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.
+        """
         
         mean = get_column(self.df, column_name).mean()
+        mean = round(mean, precision)
         return mean
     
     def get_column_mode(self, column_name: str) -> pd.Series:
@@ -46,10 +66,15 @@ class DataFrameInfo():
         mode = get_column(self.df, column_name).mode()
         return mode
     
-    def get_column_standard_deviation(self, column_name: str) -> float:
-        """Returns the standard deviation of the column whose name matches the column_name parameter."""
+    def get_column_standard_deviation(self, column_name: str, precision=2) -> float:
+        """Returns the standard deviation of the column whose name matches the column_name parameter.
+                
+            Args: 
+                precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.    
+        """
         
         std = get_column(self.df, column_name).std()
+        std = round(std, precision)
         return std
     
     def get_distinct_categories_in_colum(self, column_name: str) -> List:

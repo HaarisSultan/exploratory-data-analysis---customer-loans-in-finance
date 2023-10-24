@@ -22,7 +22,23 @@ def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
 class DataFrameInfo():
     def __init__(self, df: pd.DataFrame):
         # Give the methods access to the dataframe to avoid extensive use of parameters 
-        self.df = df            
+        self.df = df      
+        
+    def combine_null_percentage_and_count(self, columns: pd.DataFrame):
+
+        # Create two series objects containing the count and percentage of nulls in those columns 
+        percent_of_nulls = self.percentage_of_nulls_in_data_frame(dataframe=columns).sort_values(ascending=False)
+        number_of_nulls = self.count_nulls_in_data_frame(dataframe=columns)
+        column_types = columns.dtypes
+        
+        # Combine that data to display a DataFrame 
+        data = {
+            "% of nulls": percent_of_nulls,
+            "# of nulls": number_of_nulls,
+            "dtype": column_types
+        }
+        combo = pd.concat(data, axis=1)      
+        return combo
         
     def contains_nulls(self, column_name) -> bool:
         column = get_column(self.df, column_name)

@@ -1,6 +1,17 @@
 import pandas as pd
+import numpy as np
 from typing import List
 
+def check_no_nulls(column: pd.Series):
+    # Verify that all nulls were removed 
+    if column.isnull().sum() != 0:
+        raise Exception(f"Error: impute_nulls_in_column() was not able to remove all null's from {column.name}. There are still {column.isnull().sum()} null values.")
+    
+    
+def check_is_valid_strategy(strategy: str):
+     if strategy not in ['mean', 'median', 'mode']:
+        raise Exception(f"The parameter 'replace_with' accepts either 'mean', 'median' or 'mode'. You entered '{strategy}'.")
+    
 def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
     """Return a column Series from a DataFrame.
 
@@ -41,15 +52,37 @@ class DataFrameTransform():
     
     def drop_columns_by_name(self, column_names: List[str]):
         self.df.drop(column_names, axis=1, inplace=True)
+    
+    def drop_null_rows_by_column_name(self, column_name: str):
+        df = self.df
+    
+        to_drop = self.df[self.df[column_name].isnull()].index
+        df = df.drop(to_drop, axis=0)
         
-    def impute_nulls_in_columns(self, columns_to_impute: List[pd.Series], replace_with):
+        return df
         
-        if replace_with not in ['mean', 'median']:
-            raise Exception(f"The parameter 'replace_with' accepts either 'mean' or 'median'. You entered '{replace_with}'.")
+    def impute_nulls_in_column(self, column_name: str, strategy: str) -> pd.Series:
+        
+        # Raise an error if the imputation strategy is not recognised
+        check_is_valid_strategy(strategy)
+        
+        column = get_column(self.df, column_name=column_name)
+        
+        if strategy is 'mean':
+            column = column.fillna(column.mean()[0])
+        elif strategy is 'median':
+            if column.dtype in ['float64', 'int64']:
+                column = column.fillna(column.median())
+            else:
+                column = column.fillna(column.median()[0])
         else:
+            column = column.fillna(column.mode()[0])
             
-            for column in columns_to_impute:
-                if replace_with is 'mean':
-                    column.fillna(column.mean(), inplace=True)
-                else:
-                    column.fillna(column.median(), inplace=True)
+        # Raise an error if the above failed to remove all nulls from the column
+        check_no_nulls(column)
+
+        return column
+
+        
+
+                    

@@ -39,9 +39,8 @@ class DataFrameInfo():
         }
         combo = pd.concat(data, axis=1)      
         return combo
-        
-    def contains_nulls(self, column_name) -> bool:
-        column = get_column(self.df, column_name)
+
+    def contains_nulls(self, column: pd.Series) -> bool:
         return column.isnull().sum() != 0
         
     def get_columns_with_nulls(self, dataframe: pd.DataFrame):
@@ -62,59 +61,51 @@ class DataFrameInfo():
         
         return self.df.dtypes
 
-    def describe_column(self, column_name: str):
+    def describe_column(self, column: pd.Series):
         """For numerical columns, this returns the count, mean, std, 25%/50%/75% quartiles, and maximum for the given column, as a Series.
         
         For other types, it will return the count, number of unique values, the mode (top), and the frequency of the most common value.
         """
         
-        description = get_column(self.df, column_name).describe()
-        return description
+        return column.describe()
     
-    def get_column_median(self, column_name: str) -> float:
+    def get_column_median(self, column: pd.Series):
         """Returns the median value of the column whose name matches the column_name parameter."""
-        median = get_column(self.df, column_name).median()
-        return median
+        return column.median()
     
-    def get_column_mean(self, column_name: str, precision=2) -> float:
+    def get_column_mean(self, column: pd.Series, precision=2) -> float:
         """Returns the mean value of the column whose name matches the column_name parameter.
                 
             Args: 
                 precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.
         """
-        
-        mean = get_column(self.df, column_name).mean()
-        mean = round(mean, precision)
+        mean = round(column.mean(), precision)
         return mean
     
-    def get_column_mode(self, column_name: str) -> pd.Series:
+    def get_column_mode(self, column: pd.Series) -> pd.Series:
         """Returns the mode of the column whose name matches the column_name parameter."""
         
-        mode = get_column(self.df, column_name).mode()
-        return mode
+        return column.mode()
     
-    def get_column_standard_deviation(self, column_name: str, precision=2) -> float:
+    def get_column_standard_deviation(self, column: pd.Series, precision=2) -> float:
         """Returns the standard deviation of the column whose name matches the column_name parameter.
                 
             Args: 
                 precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.    
         """
         
-        std = get_column(self.df, column_name).std()
-        std = round(std, precision)
+        std = round(column.std(), precision)
         return std
     
-    def get_distinct_categories_in_colum(self, column_name: str) -> List:
+    def get_distinct_categories_in_colum(self, column: pd.Series) -> List:
         """Returns a list of unique values in the given column, if that column is of type 'category'."""
 
-        # This checks if the column exists and assigns it to column
-        column = get_column(self.df, column_name)
         
         # This gets the names of the columns which are of type 'category' to ensure the provided column_name column is not of a different type
         category_columns = self.get_categorical_columns().columns
         
-        if column_name not in list(category_columns):
-            raise Exception(f"The column {column_name} is not of type category.")
+        if column.name not in list(category_columns):
+            raise Exception(f"The column {column.name} is not of type category.")
         else:
             unique_values = list(column.unique())
             return unique_values
@@ -164,21 +155,19 @@ class DataFrameInfo():
             return null_percentages
         
 
-    def count_nulls_in_column(self, column_name: str) -> int:
+    def count_nulls_in_column(self, column: pd.Series) -> int:
         """Return the total number of null values in the series."""
         
-        column = get_column(self.df, column_name)
         null_count = column.isnull().sum()
         return null_count
     
-    def percentage_of_nulls_in_column(self, column_name: str, precision=2) -> float:
+    def percentage_of_nulls_in_column(self, column: pd.Series, precision=2) -> float:
         """Return the proportion of null values in the series as a percentage.
         
             Args:
                 column_name (str): the name of the column to be accessed 
                 precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.
         """
-        
-        column = get_column(self.df, column_name)
+    
         null_percentage = round(column.isnull().sum() * 100 / len(column), precision)
         return null_percentage

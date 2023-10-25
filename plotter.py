@@ -1,14 +1,16 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import missingno as msno 
 import matplotlib.pyplot as plt
 from typing import List
 
 class Plotter():
-    def __init__(self, dataframe: pd.DataFrame):
-        self.df = dataframe
+    def __init__(self):
+        pass
         
-    
+    def show_null_bar_chart(self, dataframe: pd.DataFrame):
+        return msno.bar(dataframe)
     
     def correlation_matrix(self, columns: pd.DataFrame):
         

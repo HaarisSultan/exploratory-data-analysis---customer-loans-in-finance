@@ -48,29 +48,33 @@ def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
     
 class DataFrameTransform():
     def __init__(self, dataframe: pd.DataFrame):
-        self.df = dataframe
+        print("DataFrameTransform loaded...")
     
-    def drop_columns_by_name(self, column_names: List[str]):
-        self.df.drop(column_names, axis=1, inplace=True)
-    
-    def drop_null_rows_by_column_name(self, column_name: str):
-        df = self.df
-    
-        to_drop = self.df[self.df[column_name].isnull()].index
-        df = df.drop(to_drop, axis=0)
-        
+    def drop_columns(self, df: pd.DataFrame, columns_to_drop: pd.Series):
+        column_names = list(columns_to_drop.index)
+        df = df.drop(column_names, axis=1)
         return df
+    
+    def drop_null_rows_by_column_name(self, df: pd.DataFrame, column_name: str) -> pd.DataFrame:
         
-    def impute_nulls_in_column(self, column_name: str, strategy: str) -> pd.Series:
+        column = get_column(df, column_name)
+        
+        if str(column.dtype) == 'Int64':
+            df = df[~df[column_name].isna()]
+            return df 
+        else:    
+            to_drop = df[column.isnull()].index
+            df = df.drop(to_drop, axis=0)
+            return df
+        
+    def impute_nulls_in_column(self, column: pd.Series, strategy: str) -> pd.Series:
         
         # Raise an error if the imputation strategy is not recognised
         check_is_valid_strategy(strategy)
         
-        column = get_column(self.df, column_name=column_name)
-        
-        if strategy is 'mean':
+        if strategy == 'mean':
             column = column.fillna(column.mean()[0])
-        elif strategy is 'median':
+        elif strategy == 'median':
             if column.dtype in ['float64', 'int64']:
                 column = column.fillna(column.median())
             else:
@@ -80,7 +84,7 @@ class DataFrameTransform():
             
         # Raise an error if the above failed to remove all nulls from the column
         check_no_nulls(column)
-
+    
         return column
 
         

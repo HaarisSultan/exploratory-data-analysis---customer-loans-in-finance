@@ -44,11 +44,11 @@ class DataFrameInfo():
         column = get_column(self.df, column_name)
         return column.isnull().sum() != 0
         
-    def get_columns_with_nulls(self):
+    def get_columns_with_nulls(self, dataframe: pd.DataFrame):
         """Returns a DataFrame containing only columns which have null values."""
         
         # only_nulls = self.df[(self.df.isnull() == True)]
-        only_nulls = self.df.loc[:, self.df.isna().any()]
+        only_nulls = dataframe.loc[:, dataframe.isna().any()]
         return only_nulls
     
     def describe_all(self):

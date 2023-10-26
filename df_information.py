@@ -1,4 +1,5 @@
 import pandas as pd    
+import numpy as np
 from typing import List
 
 def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
@@ -19,10 +20,43 @@ def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
         column = pd.Series(dataframe[column_name])
         return column
     
+
 class DataFrameInfo():
+    """DataFrameInfo class contains methods that generate useful information about the DataFrame.
+    
+    Some useful utility methods you might want to create that are often used for EDA tasks are:
+        
+        - Describe all columns in the DataFrame to check their data types
+        - Extract statistical values: median, standard deviation and mean from the columns and the DataFrame
+        - Count distinct values in categorical columns
+        - Print out the shape of the DataFrame
+        - Generate a count/percentage count of NULL values in each column
+        - Any other methods you may find useful
+    """
+    
+    
     def __init__(self, df: pd.DataFrame):
         # Give the methods access to the dataframe to avoid extensive use of parameters 
-        self.df = df      
+        self.df = df     
+        
+    def get_column_skewness(self, dataframe: pd.DataFrame, threshold=None):
+        if threshold is None:
+            skewness = dataframe.skew(numeric_only=True)
+            return skewness
+        else:
+            skewness = dataframe.skew(numeric_only=True)
+            
+
+    
+    def print_null_removal_progress(self, dataframe: pd.DataFrame):
+        # Extract only those columns with null values
+        columns_with_nulls = self.get_columns_with_nulls(dataframe)
+
+        # This displays both the # and % of nulls in the columns with nulls, good for debugging and tracking progress 
+        null_info = self.combine_null_percentage_and_count(columns_with_nulls)
+        
+        message = f"I have {len(null_info)} columns to deal with:\n"
+        return message, null_info
         
     def combine_null_percentage_and_count(self, columns: pd.DataFrame):
 
@@ -134,8 +168,6 @@ class DataFrameInfo():
             # Apply to the provided dataframe 
             null_series = dataframe.isnull().sum()
             return null_series
-        
-        
     
     def percentage_of_nulls_in_data_frame(self, dataframe=None, precision=2) -> pd.Series:
         """Returns a series showing the percentage of null values for every column in the dataframe.

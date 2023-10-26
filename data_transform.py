@@ -43,7 +43,7 @@ class DataTransform():
     def get_numeric_columns_from_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         return dataframe.select_dtypes(include=[np.number]) 
         
-    def convert_float64_columns_into_int64s(self, column_names: List[str]):
+    def convert_float64_columns_into_int64s(self, dataframe: pd.DataFrame, column_list: List[pd.Series]) -> pd.DataFrame:
         """Convert the specified float64 columns in a DataFrame into int64.
 
             Args:
@@ -71,14 +71,13 @@ class DataTransform():
                 dtype: object
         """
         
-        for column_name in column_names:
-            column = get_column(self.df, column_name=column_name)
+        for column in column_list:
+            dataframe[column] = column_list[column].astype("Int64")
 
-            self.df[column_name] = column.astype("Int64")
-            # self.df[column_name] = column.fillna(0).astype(np.int64)
+        return dataframe
     
     
-    def convert_object_columns_into_categories(self, column_names: List[str]):
+    def convert_object_columns_into_categories(self, dataframe: pd.DataFrame, column_list: List[pd.Series]):
         """Convert specified object columns in a DataFrame into category dtype.
 
             Args:
@@ -105,12 +104,12 @@ class DataTransform():
                 B    object
                 dtype: object
         """
-        for column_name in column_names:
-            column = get_column(self.df, column_name=column_name)
-            self.df[column_name] = column.astype("category")
+        
+        for column in column_list:
+            dataframe[column] = column_list[column].astype("category")
                 
     
-    def convert_object_columns_to_date(self, column_names: List[str], current_format: str):
+    def convert_object_columns_to_date(self, dataframe: pd.DataFrame, column_list: List[pd.Series], current_format: str):
         """Convert specified object columns in a DataFrame into datetime dtype.
 
             Args:
@@ -142,42 +141,38 @@ class DataTransform():
                 0 2020-01-01
                 1 2020-02-01
         """
-        for column_name in column_names:
-            column = get_column(self.df, column_name=column_name)
-            self.df[column_name]= pd.to_datetime(column, format=current_format)        
+        for column in column_list:
+            dataframe[column]= pd.to_datetime(column_list[column], format=current_format)      
     
-    def object_to_date(self, column_name: str, current_format: str):
+    def object_to_date(self, column: pd.Series, current_format: str):
         """Convert object column to datetime.
 
         Args:
             column_name: Name of column to convert
             current_format: Format string for existing dates
         """
-        
-        column = get_column(self.df, column_name)
+    
         new_col = pd.to_datetime(column, format=current_format)
         return new_col
 
-    def float64_to_int64(self, column_name: str) -> pd.Series:
+    def float64_to_int64(self, column: pd.Series) -> pd.Series:
         """Convert float column to integer.
         
         Args:
             column_name: Name of column to convert
         """
-        
-        column = get_column(self.df, column_name)
+    
         column = column.fillna(0).astype(np.int64)
         return column
 
-    def object_to_int(self, column_name: str, mapping: dict) -> pd.Series:
+    def object_to_int(self, column: pd.Series, mapping: dict) -> pd.Series:
         """Convert object column to integer using mapping.
 
         Args:
             column_name: Name of column to convert
             mapping: Mapping of values to integers
         """
-        
-        column = get_column(self.df, column_name)
+    
         updated_column = column.apply(lambda x: mapping[x] if x is not np.nan else x)
         return updated_column
 

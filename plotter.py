@@ -8,9 +8,25 @@ from typing import List
 class Plotter():
     def __init__(self):
         pass
+    
+    def plot_skew_by_column_name(self, dataframe: pd.DataFrame, column_name: str):
+        # series of skewness for each column
         
+        column_data = dataframe[[column_name]]
+        
+        skew = column_data.skew()[0]
+        
+        ax = self.plot_column_skew(column_data)
+        
+        return skew, ax
+        
+    
     def show_null_bar_chart(self, dataframe: pd.DataFrame):
         return msno.bar(dataframe)
+        
+    def plot_column_skew(self, column: pd.Series):
+        ax = column.plot.kde(bw_method=0.5)
+        return ax
     
     def correlation_matrix(self, columns: pd.DataFrame):
         

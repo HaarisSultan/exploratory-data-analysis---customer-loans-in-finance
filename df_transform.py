@@ -49,18 +49,20 @@ def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
 class DataFrameTransform():
     def __init__(self, dataframe: pd.DataFrame):
         print("DataFrameTransform loaded...")
+        
+    def log_transform(self, dataframe: pd.DataFrame, column: pd.Series):
+        dataframe[column.name] = column.map(lambda i: np.log(i) if i > 0 else 0)
+        return dataframe
+        
     
     def drop_columns(self, df: pd.DataFrame, columns_to_drop: pd.Series):
         column_names = list(columns_to_drop.index)
         df = df.drop(column_names, axis=1)
         return df
     
-    def drop_null_rows_by_column_name(self, df: pd.DataFrame, column_name: str) -> pd.DataFrame:
-        
-        column = get_column(df, column_name)
-        
+    def drop_rows_of_null_column_entries(self, df: pd.DataFrame, column: pd.Series) -> pd.DataFrame:
         if str(column.dtype) == 'Int64':
-            df = df[~df[column_name].isna()]
+            df = df[~df[column.name].isna()]
             return df 
         else:    
             to_drop = df[column.isnull()].index

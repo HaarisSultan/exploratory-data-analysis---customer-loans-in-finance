@@ -55,6 +55,10 @@ class DataFrameTransform():
         return dataframe
         
     
+    def drop_column(self, df: pd.DataFrame, column_to_drop: pd.Series):
+        df = df.drop(column_to_drop.name, axis=1)
+        return df
+    
     def drop_columns(self, df: pd.DataFrame, columns_to_drop: pd.Series):
         column_names = list(columns_to_drop.index)
         df = df.drop(column_names, axis=1)

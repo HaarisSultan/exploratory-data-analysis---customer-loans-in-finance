@@ -12,6 +12,28 @@ class Plotter():
     def __init__(self):
         pass
     
+    def plot_hist_quad(self, dataframe: pd.DataFrame):
+        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 10))
+        cols = list(dataframe.columns)
+        
+        self.histogram(dataframe[cols[0]], 20, True, ax=ax1)  
+        self.histogram(dataframe[cols[1]], 20, True, ax=ax2)  
+        self.histogram(dataframe[cols[2]], 20, True, ax=ax3)  
+        self.histogram(dataframe[cols[3]], 20, True, ax=ax4)  
+        
+        plt.tight_layout()
+        plt.show()
+        
+    
+    def plot_hist_and_qq(self, column_data: pd.Series):
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+
+        self.histogram(column_data, 20, True, ax=ax1)  
+        self.qq_plot(column_data, ax=ax2)
+        
+        plt.tight_layout()
+        plt.show()
+        
     def facet_grid(self, dataframe: pd.DataFrame, column_names: List[str]):
         sns.set(font_scale=0.7)
         frame = pd.melt(dataframe, value_vars=column_names)
@@ -19,13 +41,19 @@ class Plotter():
         grid = grid.map(sns.histplot, "value", kde=True)
         return grid
     
-    def qq_plot(self, column_data: pd.Series):
+    def qq_plot(self, column_data: pd.Series, ax=None):
+        if ax is None:
+            qqplot(column_data , scale=1 ,line='q', fit=True)
+        else:
+            qqplot(column_data, scale=1, line='q', fit=True, ax=ax)        
         
-        qq_plot = qqplot(column_data , scale=1 ,line='q', fit=True)
-        plt.show()
         
-    def histogram(self, data: pd.Series, bins: int, kde=True):
-        return sns.histplot(data, bins=bins, kde=kde)
+    def histogram(self, data: pd.Series, bins: int, kde=True, ax=None):
+        if ax is None:
+            sns.histplot(data, bins=bins, kde=kde)
+        else:
+            sns.histplot(data, bins=bins, kde=kde, ax=ax)
+        
         
     def scatter_plot(self, data: List[float]):
         return sns.scatterplot(data=data)

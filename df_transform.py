@@ -52,7 +52,6 @@ class DataFrameTransform():
         print("DataFrameTransform loaded...")
         
     def box_cox_transform(self, column_data: pd.Series) -> pd.Series:
-
         column_data = pd.Series(stats.boxcox(column_data)[0])
         return column_data
         

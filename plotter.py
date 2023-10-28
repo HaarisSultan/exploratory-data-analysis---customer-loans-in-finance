@@ -3,6 +3,8 @@ import pandas as pd
 import seaborn as sns
 import missingno as msno 
 import matplotlib.pyplot as plt
+from statsmodels.graphics.gofplots import qqplot
+
 from pandas.plotting import scatter_matrix
 from typing import List
 
@@ -16,12 +18,15 @@ class Plotter():
         grid = sns.FacetGrid(frame, col="variable",  col_wrap=3, sharex=False, sharey=False)
         grid = grid.map(sns.histplot, "value", kde=True)
         return grid
-        
     
+    def qq_plot(self, column_data: pd.Series):
+        
+        qq_plot = qqplot(column_data , scale=1 ,line='q', fit=True)
+        plt.show()
+        
     def histogram(self, data: pd.Series, bins: int, kde=True):
         return sns.histplot(data, bins=bins, kde=kde)
         
-    
     def scatter_plot(self, data: List[float]):
         return sns.scatterplot(data=data)
     

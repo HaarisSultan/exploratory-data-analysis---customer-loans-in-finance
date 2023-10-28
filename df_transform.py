@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from scipy import stats
 from typing import List
 
 def check_no_nulls(column: pd.Series):
@@ -49,6 +50,11 @@ def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
 class DataFrameTransform():
     def __init__(self, dataframe: pd.DataFrame):
         print("DataFrameTransform loaded...")
+        
+    def box_cox_transform(self, column_data: pd.Series) -> pd.Series:
+
+        column_data = pd.Series(stats.boxcox(column_data)[0])
+        return column_data
         
     def log_transform(self, dataframe: pd.DataFrame, column: pd.Series):
         dataframe[column.name] = column.map(lambda i: np.log(i) if i > 0 else 0)

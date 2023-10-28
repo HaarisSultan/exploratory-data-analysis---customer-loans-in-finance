@@ -44,10 +44,10 @@ class DataTransform():
     def int64_to_category_with_ranges(self, dataframe: pd.DataFrame, column: pd.Series) -> pd.Series:
         
         # convert all values between 0-1 to NaN
-        dataframe.loc[(column >= 0) & (column < 1), column.name] = np.nan
+        dataframe.loc[column == 0, column.name] = np.nan
 
         # work and the min and max values (where min is above 1)
-        col_min = dataframe.loc[column >= 1, str(column.name)].min() 
+        col_min = dataframe.loc[column > 0.0, str(column.name)].min() 
         col_max = dataframe.loc[column > 0, str(column.name)].max()
 
         num_bins = 4
@@ -55,6 +55,7 @@ class DataTransform():
         bin_cutoffs = [col_min + (bin_size * i) for i in range(num_bins + 1)]
 
         labels = [f"{math.floor(bin_cutoffs[i])}-{math.floor(bin_cutoffs[i+1])}" for i in range(num_bins)]
+        labels[0] = '1' + labels[0][1:]
 
 
         column = pd.cut(column, bin_cutoffs, labels=labels)

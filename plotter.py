@@ -4,6 +4,7 @@ import seaborn as sns
 import missingno as msno 
 import matplotlib.pyplot as plt
 from statsmodels.graphics.gofplots import qqplot
+import plotly.express as px
 
 from pandas.plotting import scatter_matrix
 from typing import List
@@ -24,7 +25,15 @@ class Plotter():
         plt.tight_layout()
         plt.show()
         
+    def pair_plot(self, dataframe: pd.DataFrame):
+        return sns.pairplot(dataframe)
     
+    def box_and_whiskers(self, column_data: pd.Series):
+        # create a boxplot of amount:
+        fig = px.box(column_data, column_data.name,width=600, height=500)
+
+        fig.show()
+        
     def plot_hist_and_qq(self, column_data: pd.Series):
 
         message = f"Colum: {column_data.name}, with skew of {round(column_data.skew(), 3)}."

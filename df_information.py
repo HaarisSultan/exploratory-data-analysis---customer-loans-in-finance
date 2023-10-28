@@ -37,7 +37,7 @@ class DataFrameInfo():
     
     def __init__(self, df: pd.DataFrame):
         # Give the methods access to the dataframe to avoid extensive use of parameters 
-        self.df = df     
+        self.df = df    
         
     def print_skew_and_dtype(self, dataframe: pd.DataFrame):
         skew_series = dataframe.skew(numeric_only=True).sort_values(ascending=False)

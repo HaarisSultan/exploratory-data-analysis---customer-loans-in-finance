@@ -18,7 +18,7 @@ class Plotter():
         return grid
         
     
-    def histogram(self, data: pd.Series, bins: int, kde=False):
+    def histogram(self, data: pd.Series, bins: int, kde=True):
         return sns.histplot(data, bins=bins, kde=kde)
         
     

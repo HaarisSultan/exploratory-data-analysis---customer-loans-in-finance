@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import pandas as pd 
 from typing import List
@@ -40,6 +41,30 @@ class DataTransform():
     def __init__(self, dataframe: pd.DataFrame):
         self.df = dataframe
     
+    def int64_to_category_with_ranges(self, dataframe: pd.DataFrame, column: pd.Series) -> pd.Series:
+        
+        # convert all values between 0-1 to NaN
+        dataframe.loc[(column >= 0) & (column < 1), column.name] = np.nan
+
+        # work and the min and max values (where min is above 1)
+        col_min = dataframe.loc[column >= 1, str(column.name)].min() 
+        col_max = dataframe.loc[column > 0, str(column.name)].max()
+
+        num_bins = 4
+        bin_size = (col_max - col_min) / num_bins
+        bin_cutoffs = [col_min + (bin_size * i) for i in range(num_bins + 1)]
+
+        labels = [f"{math.floor(bin_cutoffs[i])}-{math.floor(bin_cutoffs[i+1])}" for i in range(num_bins)]
+
+
+        column = pd.cut(column, bin_cutoffs, labels=labels)
+
+        column = column.cat.add_categories("0-1")
+
+        column = column.fillna("0-1")
+        
+        return column
+        
     def get_numeric_columns_from_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         return dataframe.select_dtypes(include=[np.number]) 
         

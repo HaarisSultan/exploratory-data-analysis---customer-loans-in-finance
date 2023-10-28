@@ -53,12 +53,14 @@ class DataFrameInfo():
         return combo
 
     
-    def measure_skew_for_all_columns(self, dataframe: pd.DataFrame, threshold=None):
-        if threshold is None:
-            skewness = dataframe.skew(numeric_only=True)
-            return skewness
-        else:
-            skewness = dataframe.skew(numeric_only=True)
+    def measure_skew_for_all_columns(self, dataframe: pd.DataFrame, sort=False) -> pd.Series:
+
+        skewness = dataframe.skew(numeric_only=True)
+        
+        if sort:
+            skewness = dataframe.skew(numeric_only=True).sort_values(ascending=False)
+        
+        return skewness
     
     def print_null_removal_progress(self, dataframe: pd.DataFrame):
         # Extract only those columns with null values

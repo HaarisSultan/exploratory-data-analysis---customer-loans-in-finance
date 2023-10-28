@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 from typing import List
+from plotter import Plotter
+from scipy.stats.mstats import winsorize
 
 def check_no_nulls(column: pd.Series):
     # Verify that all nulls were removed 
@@ -50,14 +52,36 @@ def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
 class DataFrameTransform():
     def __init__(self, dataframe: pd.DataFrame):
         print("DataFrameTransform loaded...")
+
         
+    def replace_column_after_box_cox(self, df: pd.DataFrame, original_column: pd.Series, new_column: pd.Series):
+        
+        og_col_name = original_column.name
+        
+        # update original column type to match the transformed data 
+        df[og_col_name] = df[og_col_name].astype(str(new_column.dtype))
+
+        # reassign the transformed data to the original column
+        df[og_col_name] = new_column
+
+        # replace any NA values introduced with the mean
+        df[og_col_name].fillna(new_column.mean(), inplace=True)
+        
+        return df
+
+    
+    def box_cox_transform_with_zeroes(self, column_data: pd.Series) -> pd.Series:
+        column_data = winsorize(column_data, limits=[0.01, 0.01])
+        column_data = pd.Series(stats.boxcox(column_data)[0])
+        return column_data
+    
     def box_cox_transform(self, column_data: pd.Series) -> pd.Series:
         column_data = pd.Series(stats.boxcox(column_data)[0])
         return column_data
         
-    def log_transform(self, dataframe: pd.DataFrame, column: pd.Series):
-        dataframe[column.name] = column.map(lambda i: np.log(i) if i > 0 else 0)
-        return dataframe
+    def log_transform(self, column: pd.Series) -> pd.Series:
+        new_column = column.map(lambda i: np.log(i) if i > 0 else 0)
+        return new_column
         
     
     def drop_column(self, df: pd.DataFrame, column_to_drop: pd.Series):

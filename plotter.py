@@ -26,13 +26,19 @@ class Plotter():
         
     
     def plot_hist_and_qq(self, column_data: pd.Series):
+
+        message = f"Colum: {column_data.name}, with skew of {round(column_data.skew(), 3)}."
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
 
         self.histogram(column_data, 20, True, ax=ax1)  
         self.qq_plot(column_data, ax=ax2)
         
+        
         plt.tight_layout()
-        plt.show()
+        # plt.show()
+        return message
+
+    
         
     def facet_grid(self, dataframe: pd.DataFrame, column_names: List[str]):
         sns.set(font_scale=0.7)
@@ -54,7 +60,8 @@ class Plotter():
         else:
             sns.histplot(data, bins=bins, kde=kde, ax=ax)
         
-        
+    
+
     def scatter_plot(self, data: List[float]):
         return sns.scatterplot(data=data)
     

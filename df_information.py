@@ -37,7 +37,18 @@ class DataFrameInfo():
     
     def __init__(self, df: pd.DataFrame):
         # Give the methods access to the dataframe to avoid extensive use of parameters 
-        self.df = df    
+        self.df = df  
+        
+    def column_contains_zero(self, column: pd.Series) -> bool:
+        unique_values = list(column.unique())
+        if column.dtype == 'float64':    
+            if 0.0 in unique_values:
+                return True
+        elif column.dtype in ['int64', 'Int64']:
+            if 0 in unique_values:
+                return True
+        return False
+          
         
     def print_skew_and_dtype(self, dataframe: pd.DataFrame):
         skew_series = dataframe.skew(numeric_only=True).sort_values(ascending=False)

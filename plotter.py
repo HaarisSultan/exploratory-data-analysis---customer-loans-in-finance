@@ -28,18 +28,29 @@ class Plotter():
     def pair_plot(self, dataframe: pd.DataFrame):
         return sns.pairplot(dataframe)
     
-    def box_and_whiskers(self, column_data: pd.Series):
-        # create a boxplot of amount:
-        fig = px.box(column_data, column_data.name,width=600, height=500)
+    def box_and_whiskers(self, column_data: pd.Series, ax=None):
+        
+        if ax is None:
+            sns.boxplot(column_data)
+            # fig = px.box(column_data, column_data.name,width=600, height=500)
+        else:
+            sns.boxplot(column_data, ax=ax)
+        
+    def plot_box_whiskers_and_hist(self, column_data: pd.Series):
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
 
-        fig.show()
+        self.box_and_whiskers(column_data, ax=ax1)  
+        self.histogram(column_data, 15, ax=ax2)
+        
+        plt.tight_layout()
+        plt.show()
         
     def plot_hist_and_qq(self, column_data: pd.Series):
 
         message = f"Colum: {column_data.name}, with skew of {round(column_data.skew(), 3)}."
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
 
-        self.histogram(column_data, 20, True, ax=ax1)  
+        self.histogram(column_data, 15, True, ax=ax1)  
         self.qq_plot(column_data, ax=ax2)
         
         

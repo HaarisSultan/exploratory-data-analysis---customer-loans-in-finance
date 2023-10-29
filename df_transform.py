@@ -12,7 +12,9 @@ def check_no_nulls(column: pd.Series):
     
     
 def check_is_valid_strategy(strategy: str):
-     if strategy not in ['mean', 'median', 'mode']:
+    """Check that the imputation strategy chosen is one of mean, median or mode."""
+    
+    if strategy not in ['mean', 'median', 'mode']:
         raise Exception(f"The parameter 'replace_with' accepts either 'mean', 'median' or 'mode'. You entered '{strategy}'.")
     
 def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
@@ -52,7 +54,6 @@ def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
 class DataFrameTransform():
     def __init__(self, dataframe: pd.DataFrame):
         print("DataFrameTransform loaded...")
-
         
     def replace_column_after_box_cox(self, df: pd.DataFrame, original_column: pd.Series, new_column: pd.Series):
         
@@ -68,12 +69,6 @@ class DataFrameTransform():
         df[og_col_name].fillna(new_column.mean(), inplace=True)
         
         return df
-
-    
-    def box_cox_transform_with_zeroes(self, column_data: pd.Series) -> pd.Series:
-        column_data = winsorize(column_data, limits=[0.01, 0.01])
-        column_data = pd.Series(stats.boxcox(column_data)[0])
-        return column_data
     
     def box_cox_transform(self, column_data: pd.Series) -> pd.Series:
         column_data = pd.Series(stats.boxcox(column_data)[0])
@@ -82,7 +77,6 @@ class DataFrameTransform():
     def log_transform(self, column: pd.Series) -> pd.Series:
         new_column = column.map(lambda i: np.log(i) if i > 0 else 0)
         return new_column
-        
     
     def drop_column(self, df: pd.DataFrame, column_to_drop: pd.Series):
         df = df.drop(column_to_drop.name, axis=1)

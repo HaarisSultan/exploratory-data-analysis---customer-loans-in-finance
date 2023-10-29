@@ -1,18 +1,19 @@
+import missingno as msno 
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import missingno as msno 
+
+# import plotly.express as px
 import matplotlib.pyplot as plt
-from statsmodels.graphics.gofplots import qqplot
-import plotly.express as px
 
 from pandas.plotting import scatter_matrix
+from statsmodels.graphics.gofplots import qqplot
 from typing import List
 
 class Plotter():
     def __init__(self):
-        pass
-    
+        print("Loaded Plotter()...")    
+        
     def plot_hist_quad(self, dataframe: pd.DataFrame):
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 10))
         cols = list(dataframe.columns)
@@ -32,7 +33,6 @@ class Plotter():
         
         if ax is None:
             sns.boxplot(column_data)
-            # fig = px.box(column_data, column_data.name,width=600, height=500)
         else:
             sns.boxplot(column_data, ax=ax)
         
@@ -53,12 +53,9 @@ class Plotter():
         self.histogram(column_data, 15, True, ax=ax1)  
         self.qq_plot(column_data, ax=ax2)
         
-        
         plt.tight_layout()
-        # plt.show()
-        return message
 
-    
+        return message
         
     def facet_grid(self, dataframe: pd.DataFrame, column_names: List[str]):
         sns.set(font_scale=0.7)
@@ -73,14 +70,11 @@ class Plotter():
         else:
             qqplot(column_data, scale=1, line='q', fit=True, ax=ax)        
         
-        
     def histogram(self, data: pd.Series, bins: int, kde=True, ax=None):
         if ax is None:
             sns.histplot(data, bins=bins, kde=kde)
         else:
             sns.histplot(data, bins=bins, kde=kde, ax=ax)
-        
-    
 
     def scatter_plot(self, data: List[float]):
         return sns.scatterplot(data=data)
@@ -96,8 +90,7 @@ class Plotter():
         column_data = dataframe[[column_name]]
         
         skew = column_data.skew()[0]
-        
-        ax = self.plot_column_skew(column_data)
+        ax = self.plot_column_skew_kde(column_data)
         
         return skew, ax
         
@@ -105,9 +98,8 @@ class Plotter():
     def show_null_bar_chart(self, dataframe: pd.DataFrame):
         return msno.bar(dataframe)
         
-    def plot_column_skew(self, column: pd.Series):
-        ax = column.plot.kde(bw_method=0.5)
-        return ax
+    def plot_column_skew_kde(self, column: pd.Series):
+        return column.plot.kde(bw_method=0.5)
     
     def correlation_matrix(self, columns: pd.DataFrame):
         

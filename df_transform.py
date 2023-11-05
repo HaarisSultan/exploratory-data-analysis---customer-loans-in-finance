@@ -4,6 +4,7 @@ from scipy import stats
 from typing import List
 from plotter import Plotter
 from scipy.stats.mstats import winsorize
+from scipy.stats import yeojohnson as yeo
 
 def check_no_nulls(column: pd.Series):
     # Verify that all nulls were removed 
@@ -78,9 +79,15 @@ class DataFrameTransform():
     def box_cox_transform(self, column_data: pd.Series) -> pd.Series:
         column_data = pd.Series(stats.boxcox(column_data)[0])
         return column_data
+    
+    def yeo_johnson_transform(self, column: pd.Series) -> pd.Series:
+        return pd.Series(yeo(column)[0])
         
     def log_transform(self, column: pd.Series) -> pd.Series:
-        new_column = column.map(lambda i: np.log(i) if i > 0 else 0)
+        if column.dtype == 'float64':
+            new_column = column.map(lambda i: np.log(i) if i > 0.0 else 0.0)
+        else:
+            new_column = column.map(lambda i: np.log(i) if i > 0 else 0)
         return new_column
         
     
@@ -99,7 +106,7 @@ class DataFrameTransform():
             return df 
         else:    
             to_drop = df[column.isnull()].index
-            df = df.drop(to_drop, axis=0)
+            df = df.drop(to_drop, axis=0) 
             return df
         
     def impute_nulls_in_column(self, column: pd.Series, strategy: str) -> pd.Series:

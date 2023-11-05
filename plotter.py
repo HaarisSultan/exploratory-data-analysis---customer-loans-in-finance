@@ -45,6 +45,25 @@ class Plotter():
         plt.tight_layout()
         plt.show()
         
+    def plot_hist_before_after_transform(self, column_before: pd.Series, column_after: pd.Series, transform_name: str):
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+        
+        # Add overall figure title 
+        fig.suptitle(f"Change in skew for {column_before.name}, after applying a {transform_name} transformation.", fontsize=12)
+        
+        ax1.set_xlabel(column_before.name)
+        ax2.set_xlabel(column_before.name)
+        
+        t1 = self.histogram(column_before, ax=ax1, label="Skew before: %.3f"%(column_before.skew()))
+        t2 = self.histogram(column_after, ax=ax2, label="Skew after: %.3f"%(column_after.skew()))
+        
+        t1.legend()
+        t2.legend()
+            
+        plt.tight_layout()
+        plt.show()
+        
+        
     def plot_hist_and_qq(self, column_data: pd.Series):
 
         message = f"Colum: {column_data.name}, with skew of {round(column_data.skew(), 3)}."
@@ -70,11 +89,11 @@ class Plotter():
         else:
             qqplot(column_data, scale=1, line='q', fit=True, ax=ax)        
         
-    def histogram(self, data: pd.Series, bins: int, kde=True, ax=None):
+    def histogram(self, data: pd.Series, bins=15, kde=True, ax=None, label=None):
         if ax is None:
-            sns.histplot(data, bins=bins, kde=kde)
+            return sns.histplot(data, bins=bins, kde=kde, label=label)
         else:
-            sns.histplot(data, bins=bins, kde=kde, ax=ax)
+            return sns.histplot(data, bins=bins, kde=kde, ax=ax, label=label)
 
     def scatter_plot(self, data: List[float]):
         return sns.scatterplot(data=data)
@@ -93,7 +112,6 @@ class Plotter():
         ax = self.plot_column_skew_kde(column_data)
         
         return skew, ax
-        
     
     def show_null_bar_chart(self, dataframe: pd.DataFrame):
         return msno.bar(dataframe)

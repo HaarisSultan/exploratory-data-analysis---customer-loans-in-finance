@@ -62,23 +62,22 @@ class DataFrameInfo():
     def contains_nulls(self, column: pd.Series) -> bool:
         return column.isnull().sum() != 0
     
+    def get_z_scores(self, column: pd.Series) -> pd.Series:
+        mean = column.mean()
+        std = column.std(ddof=0)
+         
+        return (column - mean) / std
+    
     def get_outliers_from_z_score(self, column: pd.Series, threshold=3):
         # Calculate mean and standard deviation  
-        
-        mean = column.mean()
-        std = column.std(ddof=0) 
-
-        # Calculate z-scores
-        z_scores = (column - mean) / std
+        z_scores = self.get_z_scores(column)
 
         # Define outliers as points with z-score outside +/- 3
-        # outliers = column[(np.abs(z_scores) > threshold).nonzero()]
-        outliers = column[np.abs(z_scores) > threshold]
-
-        return outliers
+        return column[np.abs(z_scores) > threshold]
     
     def get_numeric_columns_from_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         return dataframe.select_dtypes(include=[np.number]) 
+    
     def get_columns_with_nulls(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         """Returns a DataFrame containing only columns which have null values."""
         return dataframe.loc[:, dataframe.isna().any()]
@@ -169,18 +168,6 @@ class DataFrameInfo():
         """Return the proportion of null values in the series as a percentage.
         """
         return round(column.isnull().sum() * 100 / len(column), precision)
-    
-            
-    # unused
-    def column_contains_zero(self, column: pd.Series) -> bool:
-        unique_values = list(column.unique())
-        if column.dtype == 'float64':    
-            if 0.0 in unique_values:
-                return True
-        elif column.dtype in ['int64', 'Int64']:
-            if 0 in unique_values:
-                return True
-        return False
           
     # unused
     def print_skew_and_dtype(self, dataframe: pd.DataFrame):

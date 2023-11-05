@@ -2,44 +2,10 @@ import math
 import numpy as np
 import pandas as pd 
 from typing import List
-
-def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
-    """Return a column Series from a DataFrame.
-
-        Args:
-            dataframe: Pandas DataFrame to extract column from.
-            column_name: Name of column to extract.
-
-        Returns:
-            Pandas Series containing the extracted column.
-
-        Raises:
-            Exception: If column_name does not exist in the DataFrame.
-
-        Example:
-            
-            df = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
-            
-            col = get_column(df, 'A')
-            
-            print(col)
-            
-            0    1
-            1    2
-            Name: A, dtype: int64
-    """
-    
-    if column_name not in dataframe.columns:
-        # Alert the user that there is no such column
-        raise Exception("Error: The column named {column_name} is not in the provided DataFrame.")
-    else:
-        # Enforce the Series type so python knows which methods are availble to the resultant column 
-        column = pd.Series(dataframe[column_name])
-        return column
     
 class DataTransform():
-    def __init__(self, dataframe: pd.DataFrame):
-        self.df = dataframe
+    def __init__(self):
+        print("Loaded DataTransform()...")
     
     def int64_to_category_with_ranges(self, dataframe: pd.DataFrame, column: pd.Series) -> pd.Series:
         
@@ -56,7 +22,6 @@ class DataTransform():
 
         labels = [f"{math.floor(bin_cutoffs[i])}-{math.floor(bin_cutoffs[i+1])}" for i in range(num_bins)]
         labels[0] = '1' + labels[0][1:]
-
 
         column = pd.cut(column, bin_cutoffs, labels=labels)
 
@@ -171,46 +136,24 @@ class DataTransform():
             dataframe[column]= pd.to_datetime(column_list[column], format=current_format)      
     
     def object_to_date(self, column: pd.Series, current_format: str):
-        """Convert object column to datetime.
-
-        Args:
-            column_name: Name of column to convert
-            current_format: Format string for existing dates
-        """
-    
-        new_col = pd.to_datetime(column, format=current_format)
-        return new_col
+        """Convert object column to datetime."""
+        return pd.to_datetime(column, format=current_format)
 
     def float64_to_int64(self, column: pd.Series) -> pd.Series:
-        """Convert float column to integer.
-        
-        Args:
-            column_name: Name of column to convert
-        """
-    
-        column = column.fillna(0).astype(np.int64)
-        return column
+        """Convert float column to integer."""
+        return column.fillna(0).astype(np.int64)
 
     def object_to_int(self, column: pd.Series, mapping: dict) -> pd.Series:
         """Convert object column to integer using mapping.
 
         Args:
-            column_name: Name of column to convert
+            column: Column to convert
             mapping: Mapping of values to integers
         """
-    
-        updated_column = column.apply(lambda x: mapping[x] if x is not np.nan else x)
-        return updated_column
+        return column.apply(lambda x: mapping[x] if x is not np.nan else x)
 
-    def object_to_categorical(self, column_name: str) -> pd.Series:
-        """Convert object column to category dtype.
-        
-        Args: 
-            column_name: Name of column to convert
-        """
-        
-        column = get_column(self.df, column_name)
-        column = column.astype("category")
-        return column
+    def object_to_categorical(self, column: pd.Series) -> pd.Series:
+        """Convert object column to category dtype."""
+        return column.astype("category")
         
         

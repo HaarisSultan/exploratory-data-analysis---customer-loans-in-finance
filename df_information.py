@@ -2,25 +2,6 @@ import pandas as pd
 import numpy as np
 from typing import List
 
-def get_column(dataframe: pd.DataFrame, column_name: str) -> pd.Series:
-    """Returns the column with name equal to the column_name parameter, from the given dataframe, provided the column exists.
-    
-    If such a column does not exist, an Exception is raised. The result is a pandas Series object.
-    
-    Args: 
-        dataframe (pd.DataFrame): the dataframe from which to extract the column.
-        column_name (str): the name of the column to extract 
-    """
-    
-    if column_name not in dataframe.columns:
-        # Alert the user that there is no such column
-        raise Exception("Error: The column named {column_name} is not in the provided DataFrame.")
-    else:
-        # Enforce the Series type so python knows which methods are availble to the resultant column 
-        column = pd.Series(dataframe[column_name])
-        return column
-    
-
 class DataFrameInfo():
     """DataFrameInfo class contains methods that generate useful information about the DataFrame.
     
@@ -98,7 +79,6 @@ class DataFrameInfo():
     
     def get_numeric_columns_from_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         return dataframe.select_dtypes(include=[np.number]) 
-    
     def get_columns_with_nulls(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         """Returns a DataFrame containing only columns which have null values."""
         return dataframe.loc[:, dataframe.isna().any()]

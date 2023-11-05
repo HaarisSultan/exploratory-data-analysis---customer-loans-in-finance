@@ -1,12 +1,27 @@
 # Exploratory Data Analysis - Customer Loans in Finance
 
 # Table of contents 
+1. [Introduction](#introduction)
+1. [Installation](#installation)
+1. [File structure](#file-structure)
+1. [License](#license)
 
 # Introduction 
 
 # File structure 
+```
+.
+├── data_transform.py
+├── db_utils.py
+├── df_information.py
+├── df_transform.py
+├── EDA.ipynb
+├── plotter.py
+└── README.md
+```
 
 # Installation 
+
 
 # Licence
 

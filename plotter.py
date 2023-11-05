@@ -94,7 +94,23 @@ class Plotter():
             return sns.histplot(data, bins=bins, kde=kde, label=label)
         else:
             return sns.histplot(data, bins=bins, kde=kde, ax=ax, label=label)
+ 
+    def scatter_outliers(self, original: pd.Series, outliers: pd.Series):
+        
+        # Plot original data 
+        data_df = original.to_frame('values') 
+        ax = sns.scatterplot(data=data_df, x=data_df.index, y='values')
 
+        # Overlay outliers in red
+        outlier_df = outliers.to_frame('values') 
+        ax = sns.scatterplot(data=outlier_df, x=outlier_df.index, y='values', color='red', ax=ax, sizes=(1, 4))
+
+        # Label axes
+        ax.set(xlabel='Index', ylabel='Value') 
+
+        # Show plot
+        plt.show()
+    
     def scatter_plot(self, data: List[float]):
         return sns.scatterplot(data=data)
     

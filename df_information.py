@@ -80,6 +80,21 @@ class DataFrameInfo():
 
     def contains_nulls(self, column: pd.Series) -> bool:
         return column.isnull().sum() != 0
+    
+    def get_outliers_from_z_score(self, column: pd.Series, threshold=3):
+        # Calculate mean and standard deviation  
+        
+        mean = column.mean()
+        std = column.std(ddof=0) 
+
+        # Calculate z-scores
+        z_scores = (column - mean) / std
+
+        # Define outliers as points with z-score outside +/- 3
+        # outliers = column[(np.abs(z_scores) > threshold).nonzero()]
+        outliers = column[np.abs(z_scores) > threshold]
+
+        return outliers
         
     def get_columns_with_nulls(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         """Returns a DataFrame containing only columns which have null values."""

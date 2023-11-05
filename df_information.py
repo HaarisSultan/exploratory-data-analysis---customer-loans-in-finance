@@ -95,7 +95,10 @@ class DataFrameInfo():
         outliers = column[np.abs(z_scores) > threshold]
 
         return outliers
-        
+    
+    def get_numeric_columns_from_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
+        return dataframe.select_dtypes(include=[np.number]) 
+    
     def get_columns_with_nulls(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         """Returns a DataFrame containing only columns which have null values."""
         return dataframe.loc[:, dataframe.isna().any()]

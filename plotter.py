@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-# import plotly.express as px
+import plotly.express as px
 import matplotlib.pyplot as plt
 
 from pandas.plotting import scatter_matrix
@@ -135,7 +135,10 @@ class Plotter():
     def plot_column_skew_kde(self, column: pd.Series):
         return column.plot.kde(bw_method=0.5)
     
-    def correlation_matrix(self, columns: pd.DataFrame):
+    def corr_matrix(self, columns: pd.DataFrame):
+        return px.imshow(columns.corr(), title="Correlation heatmap of dataframe")
+    
+    def correlation_matrix(self, columns: pd.DataFrame) -> pd.DataFrame:
         
         # Compute the correlation matrix
         corr = columns.corr()
@@ -146,10 +149,11 @@ class Plotter():
 
         # set thins up for plotting
         cmap = sns.diverging_palette(220, 10, as_cmap=True)
-
+        plt.figure(figsize=(10, 8)) 
         # Draw the heatmap
         sns.heatmap(corr, mask=mask, 
-                    square=True, linewidths=.5, annot=False, cmap=cmap)
+                    square=True, linewidths=.5, annot=True, cmap=cmap, fmt='.2g')
         plt.yticks(rotation=0)
         plt.title('Correlation Matrix of all Numerical Variables')
         plt.show()
+        return corr

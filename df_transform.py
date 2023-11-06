@@ -5,7 +5,7 @@ from scipy.stats import yeojohnson as yeo
     
 class DataFrameTransform():
     def __init__(self):
-        print("DataFrameTransform() loaded...")
+        print("Loaded DataFrameTransform()...")
         
     def replace_column_after_box_cox(self, df: pd.DataFrame, original_column: pd.Series, new_column: pd.Series):
         

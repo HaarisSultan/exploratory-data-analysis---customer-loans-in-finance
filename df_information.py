@@ -164,6 +164,9 @@ class DataFrameInfo():
         """Return the total number of null values in the series."""
         return column.isnull().sum()
     
+    def show_value_counts(self, column: pd.Series):
+        return column.value_counts()
+    
     def percentage_of_nulls_in_column(self, column: pd.Series, precision=2) -> float:
         """Return the proportion of null values in the series as a percentage.
         """

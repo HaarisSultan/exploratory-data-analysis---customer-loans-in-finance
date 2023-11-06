@@ -5,7 +5,13 @@ from typing import List
     
 class DataTransform():
     def __init__(self):
-        print("Loaded DataTransform()...")
+        print("Loaded DataTransform()...")    
+        
+    def int_to_category_with_ranges(self, df, column):
+        pass
+    
+    def float_to_category_with_ranges(self, df, column):
+        pass
     
     def int64_to_category_with_ranges(self, dataframe: pd.DataFrame, column: pd.Series) -> pd.Series:
         
@@ -41,8 +47,8 @@ class DataTransform():
                 column_names: A list of string column names to convert from float64 to int64.
 
             Returns:
-                None. The dataframe is modified in-place.
-
+                The modified dataframe.
+                
             Raises:
                 ValueError: If any of the specified columns do not exist in the DataFrame.
 
@@ -68,14 +74,14 @@ class DataTransform():
         return dataframe
     
     
-    def convert_object_columns_into_categories(self, dataframe: pd.DataFrame, column_list: List[pd.Series]):
+    def convert_object_columns_into_categories(self, dataframe: pd.DataFrame, column_list: List[pd.Series]) -> pd.DataFrame:
         """Convert specified object columns in a DataFrame into category dtype.
 
             Args:
                 column_names: A list of column names to convert from object to category.
 
             Returns: 
-                None. The DataFrame is modified in-place.
+                The modified dataframe.
             
             Raises:
                 KeyError: If any column in column_names does not exist in the DataFrame.
@@ -98,13 +104,14 @@ class DataTransform():
         
         for column in column_list:
             dataframe[column] = column_list[column].astype("category")
-                
+        
+        return dataframe
     
-    def convert_object_columns_to_date(self, dataframe: pd.DataFrame, column_list: List[pd.Series], current_format: str):
+    def convert_obj_columns_to_date(self, dataframe: pd.DataFrame, column_list: pd.DataFrame, current_format: str) -> pd.DataFrame:
         """Convert specified object columns in a DataFrame into datetime dtype.
 
             Args:
-                column_names: A list of column names to convert from object to datetime.
+                column_list: A dataframe containing the columns to alter.
                 current_format: The strftime format string specifying how the date is currently
                                 formatted in the object columns.
                                 
@@ -133,7 +140,9 @@ class DataTransform():
                 1 2020-02-01
         """
         for column in column_list:
-            dataframe[column]= pd.to_datetime(column_list[column], format=current_format)      
+            dataframe[column]= pd.to_datetime(column_list[column], format=current_format)
+        
+        return dataframe      
     
     def object_to_date(self, column: pd.Series, current_format: str):
         """Convert object column to datetime."""

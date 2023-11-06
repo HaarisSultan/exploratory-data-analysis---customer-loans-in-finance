@@ -40,41 +40,20 @@ class DataTransform():
     def get_numeric_columns_from_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         return dataframe.select_dtypes(include=[np.number]) 
         
-    def convert_float64_columns_into_int64s(self, dataframe: pd.DataFrame, column_list: List[pd.Series]) -> pd.DataFrame:
+    def convert_float64_columns_into_int64s(self, columns: pd.DataFrame) -> pd.DataFrame:
         """Convert the specified float64 columns in a DataFrame into int64.
 
             Args:
-                column_names: A list of string column names to convert from float64 to int64.
+                columns: A dataframe of float64 columns to convert to int64.
 
             Returns:
-                The modified dataframe.
-                
-            Raises:
-                ValueError: If any of the specified columns do not exist in the DataFrame.
-
-            This converts the data type for the specified columns from float64 to int64. 
-            Any NaN values in the columns are replaced with 0 before converting.
-
-            Example:
-                
-                df = pd.DataFrame({'A': [1.2, 3.4], 'B': [5.6, 7.8]}) 
-                cols = ['A', 'B']
-                convert_float64_columns_into_int64s(cols)
-                
-                print(df.dtypes)
-                
-                A      int64
-                B      int64
-                dtype: object
+                The modified dataframe.                
         """
         
-        for column in column_list:
-            dataframe[column] = column_list[column].astype("Int64")
+        return columns.astype("Int64")
 
-        return dataframe
     
-    
-    def convert_object_columns_into_categories(self, dataframe: pd.DataFrame, column_list: List[pd.Series]) -> pd.DataFrame:
+    def convert_object_columns_into_categories(self, columns: pd.DataFrame) -> pd.DataFrame:
         """Convert specified object columns in a DataFrame into category dtype.
 
             Args:
@@ -102,10 +81,7 @@ class DataTransform():
                 dtype: object
         """
         
-        for column in column_list:
-            dataframe[column] = column_list[column].astype("category")
-        
-        return dataframe
+        return columns.astype("category")
     
     def convert_obj_columns_to_date(self, dataframe: pd.DataFrame, column_list: pd.DataFrame, current_format: str) -> pd.DataFrame:
         """Convert specified object columns in a DataFrame into datetime dtype.

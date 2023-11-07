@@ -135,6 +135,12 @@ class Plotter():
     def plot_column_skew_kde(self, column: pd.Series):
         return column.plot.kde(bw_method=0.5)
     
+    
+    # unused 
+    def spearman_corr_matrix(self, dataframe: pd.DataFrame):
+        corr = dataframe.corr(method='spearman') 
+        sns.heatmap(corr, annot=True)
+    
     def corr_matrix(self, columns: pd.DataFrame):
         return px.imshow(columns.corr(), title="Correlation heatmap of dataframe")
     

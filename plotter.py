@@ -1,51 +1,75 @@
+import matplotlib.pyplot as plt
 import missingno as msno 
 import numpy as np
 import pandas as pd
 import seaborn as sns
 
-import plotly.express as px
-import matplotlib.pyplot as plt
-
-from pandas.plotting import scatter_matrix
 from statsmodels.graphics.gofplots import qqplot
 from typing import List
 
+
 class Plotter():
+    """A class for generating plots to visualise aspects of a DataFrame. 
+    
+    Attributes:
+        None
+        
+    Methods:
+        plot_hist_quad: Plots histograms for 4 columns in a quadrant.
+        pair_plot: Creates pairwise plot of all columns.
+        box_and_whiskers: Plots box and whiskers chart for column.
+        plot_box_whiskers_and_histogram: Plots box, whiskers and histogram for column.
+        plot_histogram_before_and_after_transform: Plots histograms before and after a transform.
+        plot_histogram_and_qq: Plots histogram and Q-Q plot for column.
+        qq_plot: Generates Q-Q plot for column data.
+        histogram: Plots a histogram for provided data.
+        scatter_plot: Generates scatter plot for data.
+        correlation_matrix: Computes and plots correlation matrix, and returns the numerical matrix.
+        show_null_bar_chart: Generates bar chart showing null values for each column in the DataFrame.
+        plot_skew_by_column_name: Plot the skew value for each column in the DataFrame.
+                
+    """
     def __init__(self):
         print("Loaded Plotter()...")    
         
     def plot_hist_quad(self, dataframe: pd.DataFrame):
+        """Plots histograms for 4 columns in a quadrant."""
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 10))
         cols = list(dataframe.columns)
         
-        self.histogram(dataframe[cols[0]], 20, True, ax=ax1)  
-        self.histogram(dataframe[cols[1]], 20, True, ax=ax2)  
-        self.histogram(dataframe[cols[2]], 20, True, ax=ax3)  
-        self.histogram(dataframe[cols[3]], 20, True, ax=ax4)  
+        self.histogram(dataframe[cols[0]], ax=ax1)  
+        self.histogram(dataframe[cols[1]], ax=ax2)  
+        self.histogram(dataframe[cols[2]], ax=ax3)  
+        self.histogram(dataframe[cols[3]], ax=ax4)  
         
         plt.tight_layout()
         plt.show()
         
     def pair_plot(self, dataframe: pd.DataFrame):
+        """Creates pairwise plot of all columns."""
         return sns.pairplot(dataframe)
     
-    def box_and_whiskers(self, column_data: pd.Series, ax=None):
-        
+    def box_and_whiskers(self, column: pd.Series, ax=None):
+        """Plots box and whiskers chart for column."""
         if ax is None:
-            sns.boxplot(column_data)
+            sns.boxplot(column)
         else:
-            sns.boxplot(column_data, ax=ax)
+            sns.boxplot(column, ax=ax)
         
-    def plot_box_whiskers_and_hist(self, column_data: pd.Series):
+    def plot_box_whiskers_and_histogram(self, column: pd.Series):
+        """Plots box, whiskers and histogram for column."""
+
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
 
-        self.box_and_whiskers(column_data, ax=ax1)  
-        self.histogram(column_data, 15, ax=ax2)
+        self.box_and_whiskers(column, ax=ax1)  
+        self.histogram(column, 15, ax=ax2)
         
         plt.tight_layout()
         plt.show()
         
-    def plot_hist_before_after_transform(self, column_before: pd.Series, column_after: pd.Series, transform_name: str):
+    def plot_histogram_before_and_after_transform(self, column_before: pd.Series, column_after: pd.Series, transform_name: str):
+        """Plots histograms before and after a transform."""
+
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
         
         # Add overall figure title 
@@ -63,89 +87,42 @@ class Plotter():
         plt.tight_layout()
         plt.show()
         
-        
-    def plot_hist_and_qq(self, column_data: pd.Series):
+    def plot_histogram_and_qq(self, column: pd.Series):
+        """Plots histogram and Q-Q plot for column."""
 
-        message = f"Colum: {column_data.name}, with skew of {round(column_data.skew(), 3)}."
+        message = f"Colum: {column.name}, with skew of {round(column.skew(), 3)}."
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
 
-        self.histogram(column_data, 15, True, ax=ax1)  
-        self.qq_plot(column_data, ax=ax2)
+        self.histogram(column, 15, True, ax=ax1)  
+        self.qq_plot(column, ax=ax2)
         
         plt.tight_layout()
 
         return message
-        
-    def facet_grid(self, dataframe: pd.DataFrame, column_names: List[str]):
-        sns.set(font_scale=0.7)
-        frame = pd.melt(dataframe, value_vars=column_names)
-        grid = sns.FacetGrid(frame, col="variable",  col_wrap=3, sharex=False, sharey=False)
-        grid = grid.map(sns.histplot, "value", kde=True)
-        return grid
     
     def qq_plot(self, column_data: pd.Series, ax=None):
+        """Generates Q-Q plot for column data."""
+
         if ax is None:
             qqplot(column_data , scale=1 ,line='q', fit=True)
         else:
             qqplot(column_data, scale=1, line='q', fit=True, ax=ax)        
         
     def histogram(self, data: pd.Series, bins=15, kde=True, ax=None, label=None):
+        """Plots a histogram for provided data."""
+        
         if ax is None:
             return sns.histplot(data, bins=bins, kde=kde, label=label)
         else:
             return sns.histplot(data, bins=bins, kde=kde, ax=ax, label=label)
- 
-    def scatter_outliers(self, original: pd.Series, outliers: pd.Series):
-        
-        # Plot original data 
-        data_df = original.to_frame('values') 
-        ax = sns.scatterplot(data=data_df, x=data_df.index, y='values')
-
-        # Overlay outliers in red
-        outlier_df = outliers.to_frame('values') 
-        ax = sns.scatterplot(data=outlier_df, x=outlier_df.index, y='values', color='red', ax=ax, sizes=(1, 4))
-
-        # Label axes
-        ax.set(xlabel='Index', ylabel='Value') 
-
-        # Show plot
-        plt.show()
     
     def scatter_plot(self, data: List[float]):
+        """Generates scatter plot for data."""
         return sns.scatterplot(data=data)
     
-    def plot_scatter_matrix(self, dataframe: pd.DataFrame):
-        dataframe = dataframe.select_dtypes(include=np.number)
-        matrix = scatter_matrix(dataframe, alpha=0.2, figsize=(6, 6), diagonal="kde")
-        return matrix
-        
-    def plot_skew_by_column_name(self, dataframe: pd.DataFrame, column_name: str):
-        # series of skewness for each column
-        
-        column_data = dataframe[[column_name]]
-        
-        skew = column_data.skew()[0]
-        ax = self.plot_column_skew_kde(column_data)
-        
-        return skew, ax
-    
-    def show_null_bar_chart(self, dataframe: pd.DataFrame):
-        return msno.bar(dataframe)
-        
-    def plot_column_skew_kde(self, column: pd.Series):
-        return column.plot.kde(bw_method=0.5)
-    
-    
-    # unused 
-    def spearman_corr_matrix(self, dataframe: pd.DataFrame):
-        corr = dataframe.corr(method='spearman') 
-        sns.heatmap(corr, annot=True)
-    
-    def corr_matrix(self, columns: pd.DataFrame):
-        return px.imshow(columns.corr(), title="Correlation heatmap of dataframe")
-    
     def correlation_matrix(self, columns: pd.DataFrame) -> pd.DataFrame:
-        
+        """Computes and plots correlation matrix, and returns the numerical matrix."""
+
         # Compute the correlation matrix
         corr = columns.corr()
 
@@ -155,11 +132,30 @@ class Plotter():
 
         # set thins up for plotting
         cmap = sns.diverging_palette(220, 10, as_cmap=True)
+        
         plt.figure(figsize=(10, 8)) 
-        # Draw the heatmap
-        sns.heatmap(corr, mask=mask, 
-                    square=True, linewidths=.5, annot=True, cmap=cmap, fmt='.2g')
         plt.yticks(rotation=0)
         plt.title('Correlation Matrix of all Numerical Variables')
+        
+        # Draw the heatmap
+        sns.heatmap(corr, mask=mask, square=True, linewidths=.5, annot=True, cmap=cmap, fmt='.2g')
+        
         plt.show()
+        
         return corr
+        
+    def show_null_bar_chart(self, dataframe: pd.DataFrame):
+        """Generates bar chart showing null values for each column in the DataFrame."""
+        return msno.bar(dataframe)
+    
+    # unused
+    def plot_skew_by_column_name(self, dataframe: pd.DataFrame, column_name: str):
+        """Plot the skew value for each column in the DataFrame, based on the provided column names."""
+        # series of skewness for each column
+        
+        column_data = dataframe[[column_name]]
+        
+        skew = column_data.skew()[0]
+        ax = column_data.plot.kde(bw_method=0.5)
+        
+        return skew, ax

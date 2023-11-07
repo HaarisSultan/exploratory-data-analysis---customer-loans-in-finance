@@ -1,33 +1,54 @@
 import pandas as pd    
 import numpy as np
+
 from typing import List
 
+
 class DataFrameInfo():
-    """DataFrameInfo class contains methods that generate useful information about the DataFrame.
-    
-    Some useful utility methods you might want to create that are often used for EDA tasks are:
+    """A class for generating descriptive statistics and information about a pandas DataFrame.
+
+    Attributes:
+        None
+
+    Methods:
+        measure_skew_for_all_columns: Calculate skew for all numeric columns.
+        print_null_removal_progress: Print progress tracking null value removal.
+        combine_null_percentage_and_count: Combine null counts and percentages.
+        contains_nulls: Check if a column contains nulls.  
+        get_z_scores: Calculate z-scores for a column.
+        get_outliers_from_z_score: Find outliers based on z-scores.
+        get_numeric_columns_from_df: Extract numeric columns.
+        get_columns_with_nulls: Extract columns with nulls.
+        describe_all: Generate overall statistics.
+        show_all_column_dtypes: Show data types of all columns.
+        describe_column: Describe a specific column.
+        get_column_median: Find median of a column.
+        get_column_mean: Find mean of a column.
+        get_column_mode: Find mode of a column.
+        get_column_standard_deviation: Find standard deviation of column.
+        get_distinct_categories_in_colum: Get distinct values for a category column.
+        get_categorical_columns: Extract categorical columns.
+        print_dataframe_shape: Print shape of DataFrame.
+        count_nulls_in_data_frame: Count nulls in all columns.
+        percentage_of_nulls_in_data_frame: Calculate null percentage in all columns.
+        count_nulls_in_column: Count nulls in a column.
+        show_value_counts: Show value counts for a column.
+        percentage_of_nulls_in_column: Calculate null percentage for a column.
         
-        - Describe all columns in the DataFrame to check their data types
-        - Extract statistical values: median, standard deviation and mean from the columns and the DataFrame
-        - Count distinct values in categorical columns
-        - Print out the shape of the DataFrame
-        - Generate a count/percentage count of NULL values in each column
-        - Any other methods you may find useful
     """
 
     def __init__(self):
-        # Give the methods access to the dataframe to avoid extensive use of parameters 
         print("Loaded DataFrameInfo()...")
 
     def measure_skew_for_all_columns(self, dataframe: pd.DataFrame, sort=False) -> pd.Series:
-        """Return a series showing the skew value for each column in the dataframe."""
+        """Return a series showing the skew value for each column in the dataframe. Only applies to numeric columns."""
         
         skewness = dataframe.skew(numeric_only=True)
         
-        if not sort:
+        if sort:
+            return skewness.sort_values(ascending=False)
+        else:
             return skewness
-
-        return skewness.sort_values(ascending=False) 
     
     def print_null_removal_progress(self, dataframe: pd.DataFrame) -> (str, pd.DataFrame): 
         """Display a dataframe containing the null percentage and null count for each column in the dataframe, along with a progress message."""
@@ -60,15 +81,18 @@ class DataFrameInfo():
         return pd.concat(data, axis=1)      
 
     def contains_nulls(self, column: pd.Series) -> bool:
+        """Check if a column contains null values."""
         return column.isnull().sum() != 0
     
     def get_z_scores(self, column: pd.Series) -> pd.Series:
+        """Calculate z-scores for a column."""
         mean = column.mean()
         std = column.std(ddof=0)
          
         return (column - mean) / std
     
-    def get_outliers_from_z_score(self, column: pd.Series, threshold=3):
+    def get_outliers_from_z_score(self, column: pd.Series, threshold=3) -> pd.Series:
+        """Extract outliers from the column given based on the z-scores of that column."""
         # Calculate mean and standard deviation  
         z_scores = self.get_z_scores(column)
 
@@ -76,6 +100,7 @@ class DataFrameInfo():
         return column[np.abs(z_scores) > threshold]
     
     def get_numeric_columns_from_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
+        """Extract numeric columns."""
         return dataframe.select_dtypes(include=[np.number]) 
     
     def get_columns_with_nulls(self, dataframe: pd.DataFrame) -> pd.DataFrame:
@@ -102,11 +127,7 @@ class DataFrameInfo():
         return column.median()
     
     def get_column_mean(self, column: pd.Series, precision=2) -> float:
-        """Returns the mean value of the column whose name matches the column_name parameter.
-                
-        Args: 
-            precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.
-        """
+        """Returns the mean value of the column whose name matches the column_name parameter."""
         return round(column.mean(), precision)
     
     def get_column_mode(self, column: pd.Series) -> pd.Series:
@@ -114,11 +135,7 @@ class DataFrameInfo():
         return column.mode()
     
     def get_column_standard_deviation(self, column: pd.Series, precision=2) -> float:
-        """Returns the standard deviation of the column whose name matches the column_name parameter.
-                
-        Args: 
-            precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.    
-        """
+        """Returns the standard deviation of the column whose name matches the column_name parameter."""
         return round(column.std(), precision)
     
     def get_distinct_categories_in_colum(self, column: pd.Series) -> List:
@@ -145,36 +162,29 @@ class DataFrameInfo():
         return dataframe.isnull().sum()
     
     def percentage_of_nulls_in_data_frame(self, dataframe: pd.DataFrame, precision=2, sort=True) -> pd.Series:
-        """Returns a series showing the percentage of null values for every column in the dataframe.
-        
-        Args: 
-            precision (int): the number of values after decimal place to round the percentage to. If none is given it defaults to 2.
-            dataframe: dataframe to find the null percentages of 
-            sort: whether to return results in ascending order or unsorted 
-        """        
+        """Returns a series showing the percentage of null values for every column in the dataframe."""        
         
         null_percentages = round(dataframe.isnull().sum() * 100 / len(dataframe), precision)
         
-        if not sort:
-            return null_percentages
-        else:
+        if sort:
             return null_percentages.sort_values(ascending=False)
+        
+        return null_percentages
         
     def count_nulls_in_column(self, column: pd.Series) -> int:
         """Return the total number of null values in the series."""
         return column.isnull().sum()
     
-    def show_value_counts(self, column: pd.Series):
+    def show_value_counts(self, column: pd.Series) -> pd.Series[int]:
+        """Show value counts for a column."""
         return column.value_counts()
     
     def percentage_of_nulls_in_column(self, column: pd.Series, precision=2) -> float:
-        """Return the proportion of null values in the series as a percentage.
-        """
+        """Return the proportion of null values in the series as a percentage."""
         return round(column.isnull().sum() * 100 / len(column), precision)
           
-    # unused
-    def print_skew_and_dtype(self, dataframe: pd.DataFrame):
-        
+    def print_skew_and_dtype(self, dataframe: pd.DataFrame) -> pd.DataFrame:
+        """Returns a DataFrame showing the skew value and data type for each in the provided DataFrame."""
         skew_series = dataframe.skew(numeric_only=True).sort_values(ascending=False)
         
         columns = dataframe[list(skew_series.index)]
@@ -184,5 +194,4 @@ class DataFrameInfo():
             "dtype": columns.dtypes
         }
         
-        combo = pd.concat(data, axis=1)      
-        return combo
+        return pd.concat(data, axis=1)      

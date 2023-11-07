@@ -1,41 +1,66 @@
 import math
 import numpy as np
 import pandas as pd 
-from typing import List
+from typing import List, Any
     
 class DataTransform():
     def __init__(self):
-        print("Loaded DataTransform()...")    
+        print("Loaded DataTransform()...")  
         
-    def int_to_category_with_ranges(self, df, column):
-        pass
-    
-    def float_to_category_with_ranges(self, df, column):
-        pass
-    
-    def int64_to_category_with_ranges(self, dataframe: pd.DataFrame, column: pd.Series) -> pd.Series:
+    def int64_to_category_with_ranges(self, df: pd.DataFrame, column: pd.Series) -> pd.Series:
+
+        # Make copy to restore 0 values later
+        orig_col = column.copy()  
+
+        # Replace 0's with NaN
+        rows_with_zero_index = df.loc[column == 0, column.name].index
+        df.loc[column == 0, column.name] = np.nan
+
+        # Calculate bin cutoffs for the non zero rows 
+        non_zeros = df[~df.index.isin(rows_with_zero_index)][column.name]
+        NUM_BINS = 4
+        bin_size = (non_zeros.max() - non_zeros.min()) / NUM_BINS    
+        bin_cutoffs = [int(non_zeros.max() - (bin_size * i)) for i in range(NUM_BINS, -1, -1)]
         
-        # convert all values between 0-1 to NaN
-        dataframe.loc[column == 0, column.name] = np.nan
+        # Determine the labels for each category 
+        labels = [f"{math.floor(bin_cutoffs[i])}-{math.floor(bin_cutoffs[i+1])}" for i in range(NUM_BINS)]
 
-        # work and the min and max values (where min is above 1)
-        col_min = dataframe.loc[column > 0.0, str(column.name)].min() 
-        col_max = dataframe.loc[column > 0, str(column.name)].max()
+        # Split the entries into their ranges - this also converts the column to categorical 
+        column = pd.cut(column, bins=bin_cutoffs, labels=labels, include_lowest=True, right=False)
 
-        num_bins = 4
-        bin_size = (col_max - col_min) / num_bins
-        bin_cutoffs = [col_min + (bin_size * i) for i in range(num_bins + 1)]
+        # Add 0 category and restore the original 0 values from the copy 
+        column = column.cat.add_categories("0")
+        column.loc[orig_col == 0] = "0"
 
-        labels = [f"{math.floor(bin_cutoffs[i])}-{math.floor(bin_cutoffs[i+1])}" for i in range(num_bins)]
-        labels[0] = '1' + labels[0][1:]
-
-        column = pd.cut(column, bin_cutoffs, labels=labels)
-
-        column = column.cat.add_categories("0-1")
-
-        column = column.fillna("0-1")
-        
         return column
+    
+    def float_to_category_with_ranges(self, df: pd.DataFrame, column: pd.Series) -> pd.Series:
+
+        # Make copy to restore 0 values later
+        orig_col = column.copy()  
+
+        # Replace 0's with NaN
+        rows_with_zero_index = df.loc[column == 0.0, column.name].index
+        df.loc[column == 0.0, column.name] = np.nan
+
+        # Calculate bin cutoffs for the non zero rows 
+        non_zeros = df[~df.index.isin(rows_with_zero_index)][column.name]
+        NUM_BINS = 4
+        bin_size = (non_zeros.max() - non_zeros.min()) / NUM_BINS    
+        bin_cutoffs = [float(non_zeros.max() - (bin_size * i)) for i in range(NUM_BINS, -1, -1)]
+        
+        # Determine the labels for each category 
+        labels = [f"{bin_cutoffs[i]}-{bin_cutoffs[i+1]}" for i in range(NUM_BINS)]
+
+        # Split the entries into their ranges - this also converts the column to categorical 
+        column = pd.cut(column, bins=bin_cutoffs, labels=labels, include_lowest=True, right=False)
+
+        # Add 0 category and restore the original 0 values from the copy 
+        column = column.cat.add_categories("0.0")
+        column.loc[orig_col == 0] = "0.0"
+
+        return column
+    
         
     def get_numeric_columns_from_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         return dataframe.select_dtypes(include=[np.number]) 

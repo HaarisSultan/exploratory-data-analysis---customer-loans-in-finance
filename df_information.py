@@ -38,7 +38,7 @@ class DataFrameInfo():
         # This displays both the # and % of nulls in the columns with nulls, good for debugging and tracking progress 
         null_info = self.combine_null_percentage_and_count(columns_with_nulls)
         
-        message = f"I have {len(null_info)} columns to deal with:\n"
+        message = f"There are {len(null_info)} columns with null values left:\n"
         
         return message, null_info
         

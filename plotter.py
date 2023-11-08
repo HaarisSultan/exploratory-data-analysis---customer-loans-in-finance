@@ -15,7 +15,7 @@ class Plotter():
         None
         
     Methods:
-        plot_hist_quad: Plots histograms for 4 columns in a quadrant.
+        plot_histogram_quad: Plots histograms for 4 columns in a quadrant.
         pair_plot: Creates pairwise plot of all columns.
         box_and_whiskers: Plots box and whiskers chart for column.
         plot_box_whiskers_and_histogram: Plots box, whiskers and histogram for column.
@@ -32,7 +32,7 @@ class Plotter():
     def __init__(self):
         print("Loaded Plotter()...")    
         
-    def plot_hist_quad(self, dataframe: pd.DataFrame):
+    def plot_histogram_quad(self, dataframe: pd.DataFrame):
         """Plots histograms for 4 columns in a quadrant."""
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 10))
         cols = list(dataframe.columns)
@@ -138,7 +138,7 @@ class Plotter():
         plt.title('Correlation Matrix of all Numerical Variables')
         
         # Draw the heatmap
-        sns.heatmap(corr, mask=mask, square=True, linewidths=.5, annot=True, cmap=cmap, fmt='.2g')
+        sns.heatmap(corr, mask=mask, square=True, linewidths=.5, annot=True, cmap=cmap, fmt='.2f')
         
         plt.show()
         

@@ -175,7 +175,7 @@ class DataFrameInfo():
         """Return the total number of null values in the series."""
         return column.isnull().sum()
     
-    def show_value_counts(self, column: pd.Series) -> pd.Series[int]:
+    def show_value_counts(self, column: pd.Series) -> pd.Series:
         """Show value counts for a column."""
         return column.value_counts()
     

@@ -34,7 +34,7 @@ class Plotter():
         
     def plot_histogram_quad(self, df: pd.DataFrame):
         """Plots histograms for 4 columns in a quadrant."""
-        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 10))
+        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(8, 8))
         cols = list(df.columns)
                     
         t1 = self.histogram(df[cols[0]], ax=ax1, label="Skew: %.3f"%(df[cols[0]].skew()))  
@@ -64,7 +64,7 @@ class Plotter():
     def plot_box_whiskers_and_histogram(self, column: pd.Series):
         """Plots box, whiskers and histogram for column."""
 
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
 
         self.box_and_whiskers(column, ax=ax1)  
         self.histogram(column, 15, ax=ax2)
@@ -75,7 +75,7 @@ class Plotter():
     def plot_histogram_before_and_after_transform(self, column_before: pd.Series, column_after: pd.Series, transform_name: str):
         """Plots histograms before and after a transform."""
 
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
         
         # Add overall figure title 
         fig.suptitle(f"Change in skew for {column_before.name}, after applying a {transform_name} transformation.", fontsize=12)
@@ -96,7 +96,7 @@ class Plotter():
         """Plots histogram and Q-Q plot for column."""
 
         message = f"Colum: {column.name}, with skew of {round(column.skew(), 3)}."
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
 
         self.histogram(column, 15, True, ax=ax1)  
         self.qq_plot(column, ax=ax2)

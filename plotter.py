@@ -75,7 +75,7 @@ class Plotter():
     def plot_histogram_before_and_after_transform(self, column_before: pd.Series, column_after: pd.Series, transform_name: str):
         """Plots histograms before and after a transform."""
 
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7, 3.5))
         
         # Add overall figure title 
         fig.suptitle(f"Change in skew for {column_before.name}, after applying a {transform_name} transformation.", fontsize=12)
@@ -98,7 +98,9 @@ class Plotter():
         message = f"Colum: {column.name}, with skew of {round(column.skew(), 3)}."
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
 
-        self.histogram(column, 15, True, ax=ax1)  
+        t1 = self.histogram(column, 15, True, ax=ax1, label="Skew: %.3f"%(column.skew())) 
+        t1.legend()
+         
         self.qq_plot(column, ax=ax2)
         
         plt.tight_layout()

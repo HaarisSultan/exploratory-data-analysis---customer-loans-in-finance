@@ -43,7 +43,7 @@ class DataTransform():
         """Return a DataFrame containing only the numeric columns."""
         return dataframe.select_dtypes(include=[np.number]) 
         
-    def convert_float64_columns_into_int64s(self, columns: pd.DataFrame) -> pd.DataFrame:
+    def convert_float64_columns_into_Int64s(self, columns: pd.DataFrame) -> pd.DataFrame:
         """Convert the specified float64 columns in a DataFrame into int64."""
         return columns.astype("Int64")
     

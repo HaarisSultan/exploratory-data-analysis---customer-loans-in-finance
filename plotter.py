@@ -32,15 +32,20 @@ class Plotter():
     def __init__(self):
         print("Loaded Plotter()...")    
         
-    def plot_histogram_quad(self, dataframe: pd.DataFrame):
+    def plot_histogram_quad(self, df: pd.DataFrame):
         """Plots histograms for 4 columns in a quadrant."""
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 10))
-        cols = list(dataframe.columns)
+        cols = list(df.columns)
+                    
+        t1 = self.histogram(df[cols[0]], ax=ax1, label="Skew: %.3f"%(df[cols[0]].skew()))  
+        t2 = self.histogram(df[cols[1]], ax=ax2, label="Skew: %.3f"%(df[cols[1]].skew()))  
+        t3 = self.histogram(df[cols[2]], ax=ax3, label="Skew: %.3f"%(df[cols[2]].skew()))  
+        t4 = self.histogram(df[cols[3]], ax=ax4, label="Skew: %.3f"%(df[cols[3]].skew()))  
         
-        self.histogram(dataframe[cols[0]], ax=ax1)  
-        self.histogram(dataframe[cols[1]], ax=ax2)  
-        self.histogram(dataframe[cols[2]], ax=ax3)  
-        self.histogram(dataframe[cols[3]], ax=ax4)  
+        t1.legend()
+        t2.legend()
+        t3.legend()
+        t4.legend()
         
         plt.tight_layout()
         plt.show()

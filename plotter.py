@@ -158,10 +158,11 @@ class Plotter():
         """Generates bar chart showing null values for each column in the DataFrame."""
         return msno.bar(dataframe)
     
-    def bar_plot(self, data: Series):
-        ax = sns.barplot(data, native_scale=True, errorbar=None)
-        ax.bar_label(ax.containers[0], fontsize=10)
-        
+    def stacked_bar_plot(self, data: DataFrame, title: str):
+        # Plot bar chart
+        data.plot(x='Data', kind='bar', stacked=True, title=title)
+
+        plt.show()
     
     # unused
     def plot_skew_by_column_name(self, dataframe: DataFrame, column_name: str):

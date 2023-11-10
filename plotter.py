@@ -4,8 +4,11 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+from pandas import DataFrame, Series
+
 from statsmodels.graphics.gofplots import qqplot
 from typing import List
+
 
 
 class Plotter():
@@ -32,7 +35,7 @@ class Plotter():
     def __init__(self):
         print("Loaded Plotter()...")    
         
-    def plot_histogram_quad(self, df: pd.DataFrame):
+    def plot_histogram_quad(self, df: DataFrame):
         """Plots histograms for 4 columns in a quadrant."""
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(8, 8))
         cols = list(df.columns)
@@ -50,18 +53,18 @@ class Plotter():
         plt.tight_layout()
         plt.show()
         
-    def pair_plot(self, dataframe: pd.DataFrame):
+    def pair_plot(self, dataframe: DataFrame):
         """Creates pairwise plot of all columns."""
         return sns.pairplot(dataframe)
     
-    def box_and_whiskers(self, column: pd.Series, ax=None):
+    def box_and_whiskers(self, column: Series, ax=None):
         """Plots box and whiskers chart for column."""
         if ax is None:
             sns.boxplot(column)
         else:
             sns.boxplot(column, ax=ax)
         
-    def plot_box_whiskers_and_histogram(self, column: pd.Series):
+    def plot_box_whiskers_and_histogram(self, column: Series):
         """Plots box, whiskers and histogram for column."""
 
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
@@ -72,7 +75,7 @@ class Plotter():
         plt.tight_layout()
         plt.show()
         
-    def plot_histogram_before_and_after_transform(self, column_before: pd.Series, column_after: pd.Series, transform_name: str):
+    def plot_histogram_before_and_after_transform(self, column_before: Series, column_after: Series, transform_name: str):
         """Plots histograms before and after a transform."""
 
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7, 3.5))
@@ -92,7 +95,7 @@ class Plotter():
         plt.tight_layout()
         plt.show()
         
-    def plot_histogram_and_qq(self, column: pd.Series):
+    def plot_histogram_and_qq(self, column: Series):
         """Plots histogram and Q-Q plot for column."""
 
         message = f"Colum: {column.name}, with skew of {round(column.skew(), 3)}."
@@ -107,7 +110,7 @@ class Plotter():
 
         return message
     
-    def qq_plot(self, column_data: pd.Series, ax=None):
+    def qq_plot(self, column_data: Series, ax=None):
         """Generates Q-Q plot for column data."""
 
         if ax is None:
@@ -115,7 +118,7 @@ class Plotter():
         else:
             qqplot(column_data, scale=1, line='q', fit=True, ax=ax)        
         
-    def histogram(self, data: pd.Series, bins=15, kde=True, ax=None, label=None):
+    def histogram(self, data: Series, bins=15, kde=True, ax=None, label=None):
         """Plots a histogram for provided data."""
         
         if ax is None:
@@ -127,7 +130,7 @@ class Plotter():
         """Generates scatter plot for data."""
         return sns.scatterplot(data=data)
     
-    def correlation_matrix(self, columns: pd.DataFrame) -> pd.DataFrame:
+    def correlation_matrix(self, columns: DataFrame) -> DataFrame:
         """Computes and plots correlation matrix, and returns the numerical matrix."""
 
         # Compute the correlation matrix
@@ -151,12 +154,17 @@ class Plotter():
         
         return corr
         
-    def show_null_bar_chart(self, dataframe: pd.DataFrame):
+    def show_null_bar_chart(self, dataframe: DataFrame):
         """Generates bar chart showing null values for each column in the DataFrame."""
         return msno.bar(dataframe)
     
+    def bar_plot(self, data: Series):
+        ax = sns.barplot(data, native_scale=True, errorbar=None)
+        ax.bar_label(ax.containers[0], fontsize=10)
+        
+    
     # unused
-    def plot_skew_by_column_name(self, dataframe: pd.DataFrame, column_name: str):
+    def plot_skew_by_column_name(self, dataframe: DataFrame, column_name: str):
         """Plot the skew value for each column in the DataFrame, based on the provided column names."""
         # series of skewness for each column
         

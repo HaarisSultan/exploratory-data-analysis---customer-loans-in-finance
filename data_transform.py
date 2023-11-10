@@ -2,6 +2,8 @@ import math
 import numpy as np
 import pandas as pd 
 
+from pandas import DataFrame, Series
+
 
 class DataTransform():
     """A class to transform columns in the DataFrame. 
@@ -12,7 +14,7 @@ class DataTransform():
     def __init__(self):
         print("Loaded DataTransform()...")  
         
-    def int64_to_category_with_ranges(self, df: pd.DataFrame, column: pd.Series) -> pd.Series:
+    def int64_to_category_with_ranges(self, df: DataFrame, column: Series) -> Series:
         """Convert the Series given into a category type, and assign it's values to ranges."""
         # Make copy to restore 0 values later
         orig_col = column.copy()  
@@ -39,19 +41,19 @@ class DataTransform():
 
         return column
     
-    def get_numeric_columns_from_df(self, dataframe: pd.DataFrame) -> pd.DataFrame:
+    def get_numeric_columns_from_df(self, dataframe: DataFrame) -> DataFrame:
         """Return a DataFrame containing only the numeric columns."""
         return dataframe.select_dtypes(include=[np.number]) 
         
-    def convert_float64_columns_into_Int64s(self, columns: pd.DataFrame) -> pd.DataFrame:
+    def convert_float64_columns_into_Int64s(self, columns: DataFrame) -> DataFrame:
         """Convert the specified float64 columns in a DataFrame into int64."""
         return columns.astype("Int64")
     
-    def convert_object_columns_into_categories(self, columns: pd.DataFrame) -> pd.DataFrame:
+    def convert_object_columns_into_categories(self, columns: DataFrame) -> DataFrame:
         """Convert specified object columns in a DataFrame into category dtype."""
         return columns.astype("category")
     
-    def convert_obj_columns_to_date(self, dataframe: pd.DataFrame, column_list: pd.DataFrame, current_format: str) -> pd.DataFrame:
+    def convert_obj_columns_to_date(self, dataframe: DataFrame, column_list: DataFrame, current_format: str) -> DataFrame:
         """Convert specified object columns in a DataFrame into datetime dtype."""
         
         for column in column_list:
@@ -59,19 +61,19 @@ class DataTransform():
         
         return dataframe      
     
-    def object_to_date(self, column: pd.Series, current_format: str):
+    def object_to_date(self, column: Series, current_format: str):
         """Convert object column to datetime."""
         return pd.to_datetime(column, format=current_format)
 
-    def float64_to_int64(self, column: pd.Series) -> pd.Series:
+    def float64_to_int64(self, column: Series) -> Series:
         """Convert float column to integer."""
         return column.fillna(0).astype(np.int64)
 
-    def object_to_int(self, column: pd.Series, mapping: dict) -> pd.Series:
+    def object_to_int(self, column: Series, mapping: dict) -> Series:
         """Convert object column to integer using mapping."""
         return column.apply(lambda x: mapping[x] if x is not np.nan else x)
 
-    def object_to_categorical(self, column: pd.Series) -> pd.Series:
+    def object_to_categorical(self, column: Series) -> Series:
         """Convert object column to category dtype."""
         return column.astype("category")
         

@@ -67,9 +67,8 @@ class DataFrameTransform():
         """Drop a specified column from a DataFrame."""
         return df.drop(column_to_drop.name, axis=1)
         
-    def drop_columns(self, df: DataFrame, columns_to_drop: Series) -> DataFrame:
+    def drop_columns(self, df: DataFrame, column_names: List[str]) -> DataFrame:
         """Drop specified columns from a DataFrame."""
-        column_names = list(columns_to_drop.index)
         return df.drop(column_names, axis=1)
     
     def drop_rows_of_null_column_entries(self, df: DataFrame, column_names: List[str]) -> DataFrame:

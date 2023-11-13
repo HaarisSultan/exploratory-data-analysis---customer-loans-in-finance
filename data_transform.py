@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd 
 
 from pandas import DataFrame, Series
+from typing import List
 
 
 class DataTransform():
@@ -49,9 +50,10 @@ class DataTransform():
         """Convert the specified float64 columns in a DataFrame into int64."""
         return columns.astype("Int64")
     
-    def convert_object_columns_into_categories(self, columns: DataFrame) -> DataFrame:
+    def convert_object_columns_into_categories(self, df: DataFrame, colnames: List[str]) -> DataFrame:
         """Convert specified object columns in a DataFrame into category dtype."""
-        return columns.astype("category")
+        df[colnames] = df[colnames].astype("category")
+        return df
     
     def convert_obj_columns_to_date(self, dataframe: DataFrame, column_list: DataFrame, current_format: str) -> DataFrame:
         """Convert specified object columns in a DataFrame into datetime dtype."""
@@ -69,13 +71,13 @@ class DataTransform():
         """Convert float column to integer."""
         return column.fillna(0).astype(np.int64)
 
-    def category_to_int(self, column: Series, mapping: dict) -> Series:
-        """Convert category column to integer using mapping."""
-        return column.apply(lambda x: mapping[x])
-
     def object_to_int(self, column: Series, mapping: dict) -> Series:
         """Convert object column to integer using mapping."""
-        return column.apply(lambda x: mapping[x] if x is not np.nan else x)
+        return Series(column.apply(lambda x: mapping[x])).astype('int64') 
+        
+    def category_to_int(self, column: Series, mapping: dict) -> Series:
+        """Convert category column to integer using mapping."""
+        return Series(column.apply(lambda x: mapping[x])).astype('int64')
 
     def object_to_categorical(self, column: Series) -> Series:
         """Convert object column to category dtype."""

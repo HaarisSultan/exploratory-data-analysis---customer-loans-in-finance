@@ -4,7 +4,9 @@ import numpy as np
 from pandas import DataFrame, Series
 from scipy import stats
 from scipy.stats import yeojohnson as yeo    
+from sklearn.preprocessing import LabelEncoder
 from typing import List
+
     
     
 class DataFrameTransform():
@@ -107,3 +109,13 @@ class DataFrameTransform():
             raise Exception(f"Error: impute_nulls_in_column() was not able to remove all null's from {column.name}. There are still {column.isnull().sum()} null values.")
         
         return column
+    
+    def apply_label_encoder_to_df(self, data: DataFrame, features: List[str]) -> DataFrame:
+        encoder = LabelEncoder()
+        
+        #Fit label encoder and return encoded labels
+        for column in features:
+            data[column] = encoder.fit_transform(data[column])
+            
+        return data
+

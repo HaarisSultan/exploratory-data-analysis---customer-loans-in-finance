@@ -85,6 +85,4 @@ class DataTransform():
     
     def float_to_money_format(self, value: float) -> str:
         """Convert a float to a string with commas to denote money."""
-        return '£{:,.2f}'.format(value)
-        
-        
+        return '£{:,.2f}'.format(value)        

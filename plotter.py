@@ -145,7 +145,7 @@ class Plotter():
         
         plt.figure(figsize=(10, 8)) 
         plt.yticks(rotation=0)
-        plt.title('Correlation Matrix of all Numerical Variables')
+        plt.title('Correlation Matrix')
         
         # Draw the heatmap
         sns.heatmap(corr, mask=mask, square=True, linewidths=.5, annot=True, cmap=cmap, fmt='.2f')

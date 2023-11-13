@@ -24,13 +24,13 @@
 
 # Installation 
 1. Clone the project to your local machine using `git clone https://github.com/HaarisSultan/exploratory-data-analysis---customer-loans-in-finance.git`
-1. Install the dependencies listed in `requirements.txt` using a package manager *(e.g. pip or brew)*
+2. Install the dependencies listed in `requirements.txt` using a package manager *(e.g. pip or brew)*
 
 I had to download the `loan_payments.csv` file for the data analysis by running `python db_utils.py` - which only works if you have a credentials.yaml file in the project directory. 
 
 For anyone wishing to run the project without the credentials file, I have simply added the `loan_payments.csv` file to the project, so the db_utils.py file is not needed. 
 
-1. Open the file EDA.ipynb click Run All  
+3. Open the file EDA.ipynb click Run All  
 
 # Licence
 

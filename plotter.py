@@ -130,6 +130,9 @@ class Plotter():
         """Generates scatter plot for data."""
         return sns.scatterplot(data=data)
     
+    def barplot(self, data: DataFrame, x: str, y: str):
+        return sns.barplot(data, x=x, y=y)
+    
     def correlation_matrix(self, columns: DataFrame) -> DataFrame:
         """Computes and plots correlation matrix, and returns the numerical matrix."""
 

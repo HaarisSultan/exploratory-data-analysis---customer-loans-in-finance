@@ -55,13 +55,10 @@ class DataTransform():
         df[colnames] = df[colnames].astype("category")
         return df
     
-    def convert_obj_columns_to_date(self, dataframe: DataFrame, column_list: DataFrame, current_format: str) -> DataFrame:
+    def convert_obj_columns_to_date(self, dataframe: DataFrame, column_names: List[str], current_format: str) -> DataFrame:
         """Convert specified object columns in a DataFrame into datetime dtype."""
-        
-        for column in column_list:
-            dataframe[column]= pd.to_datetime(column_list[column], format=current_format)
-        
-        return dataframe      
+        dataframe[column_names] = dataframe[column_names].apply(lambda x: pd.to_datetime(x, format=current_format))  
+        return dataframe   
     
     def object_to_date(self, column: Series, current_format: str):
         """Convert object column to datetime."""

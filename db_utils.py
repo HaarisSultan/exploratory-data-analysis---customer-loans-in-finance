@@ -43,7 +43,7 @@ class RDSDatabaseConnector():
         dataframe = self.extract_table_as_dataframe(engine)
         
         # save the dataframe into a csv file
-        save_to_csv(dataframe, "../loan_payments.csv")
+        save_to_csv(dataframe, "loan_payments.csv")
             
     def extract_table_as_dataframe(self, engine: Engine):
         """Extract SQL data and return it as a Pandas DataFrame."""

@@ -43,6 +43,10 @@ class DataFrameTransform():
         
         return df
     
+    def calculate_revenue(self, data: DataFrame) -> int:
+        """Use revenue formula to get the sum of revenues for a Series of loans."""
+        return pd.Series(data['loan_amount'] * (data['int_rate'] / 12) * data['term']).sum()
+        
     def box_cox_transform(self, column_data: Series) -> Series:
         """Apply a Box-Cox transform to a Series."""
         return Series(stats.boxcox(column_data)[0])

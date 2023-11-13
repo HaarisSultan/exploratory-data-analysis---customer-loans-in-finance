@@ -69,6 +69,10 @@ class DataTransform():
         """Convert float column to integer."""
         return column.fillna(0).astype(np.int64)
 
+    def category_to_int(self, column: Series, mapping: dict) -> Series:
+        """Convert category column to integer using mapping."""
+        return column.apply(lambda x: mapping[x])
+
     def object_to_int(self, column: Series, mapping: dict) -> Series:
         """Convert object column to integer using mapping."""
         return column.apply(lambda x: mapping[x] if x is not np.nan else x)
@@ -76,5 +80,9 @@ class DataTransform():
     def object_to_categorical(self, column: Series) -> Series:
         """Convert object column to category dtype."""
         return column.astype("category")
+    
+    def float_to_money_format(self, value: float) -> str:
+        """Convert a float to a string with commas to denote money."""
+        return '£{:,.2f}'.format(value)
         
         

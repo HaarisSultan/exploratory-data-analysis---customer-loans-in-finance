@@ -8,6 +8,15 @@
 
 # Introduction 
 
+This is my first time maintaining and working on a Data Analytics project; through it I have been able to develop and consolidate various aspects of my programming skills. For example:
+
+- Working with the pandas library
+- Writing clean code; creating multiple classes; using both notebooks and modules.
+- Gained more familiarity with Git and GitHub; keeping code up to date with docstrings; and writing a README
+- Worked on a Exploratory Data Analysis task to get used to working with large data sets 
+
+The bulk of the code is in the EDA.ipynb file, which is where the data analysis takes place. The other python files (except for `db_utils.py`) provide functions to assist the EDA file in its analysis. 
+
 # File structure 
 ```
 .

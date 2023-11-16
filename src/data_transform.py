@@ -9,7 +9,28 @@ from typing import List
 class DataTransform():
     """A class to transform columns in the DataFrame. 
     
-    TODO - list the methods hre 
+    Attributes:
+        None
+    
+    Methods:
+        int64_to_category_with_ranges:
+            Convert the Series given into a category type, and assign it's values to ranges.
+        convert_float64_columns_into_Int64s:
+            Convert the specified float64 columns in a DataFrame into int64.
+        convert_object_columns_into_categories:
+            Convert specified object columns in a DataFrame into category dtype.
+        convert_obj_columns_to_date:
+            Convert specified object columns in a DataFrame into datetime dtype.
+        float64_to_int64:
+            Convert float column to integer.
+        object_to_int:
+            Convert object column to integer using mapping.
+        category_to_int:
+            Convert category column to integer using mapping.
+        object_to_categorical:
+            Convert object column to category dtype.
+        float_to_money_format:
+            Convert a float to a string with commas to denote money.
 
     """
     def __init__(self):
@@ -41,10 +62,6 @@ class DataTransform():
         column.loc[orig_col == 0] = "0"
 
         return column
-    
-    def get_numeric_columns_from_df(self, dataframe: DataFrame) -> DataFrame:
-        """Return a DataFrame containing only the numeric columns."""
-        return dataframe.select_dtypes(include=[np.number]) 
         
     def convert_float64_columns_into_Int64s(self, columns: DataFrame) -> DataFrame:
         """Convert the specified float64 columns in a DataFrame into int64."""
@@ -59,27 +76,27 @@ class DataTransform():
         """Convert specified object columns in a DataFrame into datetime dtype."""
         dataframe[column_names] = dataframe[column_names].apply(lambda x: pd.to_datetime(x, format=current_format))  
         return dataframe   
-    
-    def object_to_date(self, column: Series, current_format: str):
-        """Convert object column to datetime."""
-        return pd.to_datetime(column, format=current_format)
-
-    def float64_to_int64(self, column: Series) -> Series:
-        """Convert float column to integer."""
-        return column.fillna(0).astype(np.int64)
 
     def object_to_int(self, column: Series, mapping: dict) -> Series:
         """Convert object column to integer using mapping."""
         return Series(column.apply(lambda x: mapping[x])).astype('int64') 
-        
-    def category_to_int(self, column: Series, mapping: dict) -> Series:
-        """Convert category column to integer using mapping."""
-        return Series(column.apply(lambda x: mapping[x])).astype('int64')
-
-    def object_to_categorical(self, column: Series) -> Series:
-        """Convert object column to category dtype."""
-        return column.astype("category")
     
     def float_to_money_format(self, value: float) -> str:
         """Convert a float to a string with commas to denote money."""
         return '£{:,.2f}'.format(value)        
+    
+    ########## ########## ##########
+    # The following functions may have been used at some point in the project, but do not feature in the current EDA Notebook.    
+    ########## ########## #########
+
+    def category_to_int(self, column: Series, mapping: dict) -> Series:
+        """Convert category column to integer using mapping."""
+        return Series(column.apply(lambda x: mapping[x])).astype('int64')
+
+    def float64_to_int64(self, column: Series) -> Series:
+        """Convert float column to integer."""
+        return column.fillna(0).astype(np.int64)
+    
+    def object_to_categorical(self, column: Series) -> Series:
+        """Convert object column to category dtype."""
+        return column.astype("category")

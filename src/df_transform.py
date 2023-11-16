@@ -3,7 +3,6 @@ import numpy as np
 
 from pandas import DataFrame, Series
 from scipy import stats
-from scipy.stats import yeojohnson as yeo    
 from sklearn.preprocessing import LabelEncoder
 from typing import List
 
@@ -16,14 +15,26 @@ class DataFrameTransform():
         None
     
     Methods:
-        replace_column_after_box_cox: Replaces a DataFrame column with a transformed version, handling dtype changes and NaN values.
-        box_cox_transform: Applies a Box-Cox transform to a Series and returns the result.
-        yeo_johnson_transform: Applies a Yeo-Johnson transform to a Series and returns the result. 
-        log_transform: Applies a log transform to a Series and returns the result.
-        drop_column: Drops a specified column from a DataFrame.
-        drop_columns: Drops specified columns from a DataFrame.
-        drop_rows_of_null_column_entries: Drop rows with NaN values in DataFrame columns specified by column_names.
-        impute_nulls_in_column: Imputes NaN values in a Series using mean, median or mode.
+        replace_column_after_box_cox: 
+            Replaces a DataFrame column with a transformed version, handling dtype changes and NaN values.
+        calculate_revenue:
+            Use revenue formula to get the sum of revenues for a Series of loans.
+        box_cox_transform: 
+            Applies a Box-Cox transform to a Series and returns the result.
+        yeo_johnson_transform: 
+            Applies a Yeo-Johnson transform to a Series and returns the result. 
+        drop_column: 
+            Drops a specified column from a DataFrame.
+        drop_columns: 
+            Drops specified columns from a DataFrame.
+        drop_rows_of_null_column_entries: 
+            Drop rows with NaN values in DataFrame columns specified by column_names.
+        impute_nulls_in_column: 
+            Imputes NaN values in a Series using mean, median or mode.
+        apply_label_encoder_to_df: 
+            Return DataFrame with non-numeric values converted to numeric ones.
+        log_transform: 
+            Applies a log transform to a Series and returns the result.
 
     """
     
@@ -55,15 +66,7 @@ class DataFrameTransform():
     
     def yeo_johnson_transform(self, column: Series) -> Series:
         """Apply a Yeo-Johnson transform to a Series."""
-        return Series(yeo(column)[0])
-        
-    def log_transform(self, column: Series) -> Series:
-        """Apply a log transform to a Series."""
-        if column.dtype == 'float64':
-            new_column = column.map(lambda i: np.log(i) if i > 0.0 else 0.0)
-        else:
-            new_column = column.map(lambda i: np.log(i) if i > 0 else 0)      
-        return new_column
+        return Series(stats.yeojohnson(column)[0])
     
     def drop_column(self, df: DataFrame, column_to_drop: Series) -> DataFrame:
         """Drop a specified column from a DataFrame."""
@@ -102,6 +105,7 @@ class DataFrameTransform():
             else:
                 column = column.fillna(column.median()[0])
         else:
+            # Mode imputation
             column = column.fillna(column.mode()[0])
             
         # Raise an error if the above failed to remove all nulls from the column
@@ -111,6 +115,7 @@ class DataFrameTransform():
         return column
     
     def apply_label_encoder_to_df(self, data: DataFrame, features: List[str]) -> DataFrame:
+        """Use a LabelEncoder to convert non-numeric values into numeric ones."""
         encoder = LabelEncoder()
         
         #Fit label encoder and return encoded labels
@@ -119,3 +124,14 @@ class DataFrameTransform():
             
         return data
 
+    ########## ########## ##########
+    # The following functions may have been used at some point in the project, but do not feature in the current EDA Notebook.    
+    ########## ########## #########
+
+    def log_transform(self, column: Series) -> Series:
+        """Apply a log transform to a Series."""
+        if column.dtype == 'float64':
+            new_column = column.map(lambda i: np.log(i) if i > 0.0 else 0.0)
+        else:
+            new_column = column.map(lambda i: np.log(i) if i > 0 else 0)      
+        return new_column

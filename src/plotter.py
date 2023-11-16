@@ -4,10 +4,8 @@ import numpy as np
 import seaborn as sns
 
 from pandas import DataFrame, Series
-
 from statsmodels.graphics.gofplots import qqplot
 from typing import List
-
 
 
 class Plotter():
@@ -17,20 +15,37 @@ class Plotter():
         None
         
     Methods:
-        plot_histogram_quad: Plots histograms for 4 columns in a quadrant.
-        pair_plot: Creates pairwise plot of all columns.
-        box_and_whiskers: Plots box and whiskers chart for column.
-        plot_box_whiskers_and_histogram: Plots box, whiskers and histogram for column.
-        plot_histogram_before_and_after_transform: Plots histograms before and after a transform.
-        plot_histogram_and_qq: Plots histogram and Q-Q plot for column.
-        qq_plot: Generates Q-Q plot for column data.
-        histogram: Plots a histogram for provided data.
-        scatter_plot: Generates scatter plot for data.
-        correlation_matrix: Computes and plots correlation matrix, and returns the numerical matrix.
-        show_null_bar_chart: Generates bar chart showing null values for each column in the DataFrame.
-        plot_skew_by_column_name: Plot the skew value for each column in the DataFrame.
+        plot_histogram_quad: 
+            Plots histograms for 4 columns in a quadrant.
+        plot_histogram_before_and_after_transform: 
+            Plots histograms before and after a transform.
+        plot_histogram_and_qq: 
+            Plots histogram and Q-Q plot for Series.
+        qq_plot: 
+            Generates Q-Q plot for a Series.
+        histogram: 
+            Plots a histogram for provided Series.
+        barplot:
+            Generate a bar plot of the DataFrame, for columns x and y.
+        correlation_matrix: 
+            Computes and plots correlation matrix, and returns the numerical matrix.
+        show_null_bar_chart: 
+            Generates bar chart showing null values for each column in the DataFrame.
+        stacked_bar_plot:
+            Genertes a stacked bar plot.
+        scatter_plot: 
+            Generates scatter plot for data.
+        plot_skew_by_column_name: 
+            Plot the skew value for each column in the DataFrame.
+        pair_plot: 
+            Creates pairwise plot of all columns.
+        box_and_whiskers: 
+            Plots box and whiskers chart for Series.
+        plot_box_whiskers_and_histogram: 
+            Plots box and whiskers and histogram for Series.
                 
     """
+    
     def __init__(self):
         print("Loaded Plotter()...")    
         
@@ -48,28 +63,6 @@ class Plotter():
         t2.legend()
         t3.legend()
         t4.legend()
-        
-        plt.tight_layout()
-        plt.show()
-        
-    def pair_plot(self, dataframe: DataFrame):
-        """Creates pairwise plot of all columns."""
-        return sns.pairplot(dataframe)
-    
-    def box_and_whiskers(self, column: Series, ax=None):
-        """Plots box and whiskers chart for column."""
-        if ax is None:
-            sns.boxplot(column)
-        else:
-            sns.boxplot(column, ax=ax)
-        
-    def plot_box_whiskers_and_histogram(self, column: Series):
-        """Plots box, whiskers and histogram for column."""
-
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
-
-        self.box_and_whiskers(column, ax=ax1)  
-        self.histogram(column, 15, ax=ax2)
         
         plt.tight_layout()
         plt.show()
@@ -125,11 +118,8 @@ class Plotter():
         else:
             return sns.histplot(data, bins=bins, kde=kde, ax=ax, label=label)
     
-    def scatter_plot(self, data: List[float]):
-        """Generates scatter plot for data."""
-        return sns.scatterplot(data=data)
-    
     def barplot(self, data: DataFrame, x: str, y: str):
+        """Generate a bar plot of the DataFrame, for columns x and y."""
         return sns.barplot(data, x=x, y=y)
     
     def correlation_matrix(self, data: DataFrame, title: str="Correlation matrix") -> DataFrame:
@@ -161,19 +151,48 @@ class Plotter():
         return msno.bar(dataframe)
     
     def stacked_bar_plot(self, data: DataFrame, title: str):
-        # Plot bar chart
+        """Genertes a stacked bar plot."""
+        # Plot bar plot
         data.plot(x='Data', kind='bar', stacked=True, title=title)
 
         plt.show()
     
-    # unused
+    ########## ########## ##########
+    # The following functions may have been used at some point in the project, but do not feature in the current EDA Notebook.    
+    ########## ########## #########
+    
+    def scatter_plot(self, data: List[float]):
+        """Generates scatter plot for data."""
+        return sns.scatterplot(data=data)
+    
     def plot_skew_by_column_name(self, dataframe: DataFrame, column_name: str):
         """Plot the skew value for each column in the DataFrame, based on the provided column names."""
-        # series of skewness for each column
-        
+        # Series of skewness for each column
         column_data = dataframe[[column_name]]
         
         skew = column_data.skew()[0]
         ax = column_data.plot.kde(bw_method=0.5)
         
         return skew, ax
+    
+    def pair_plot(self, dataframe: DataFrame):
+        """Creates pairwise plot of all columns."""
+        return sns.pairplot(dataframe)
+    
+    def box_and_whiskers(self, column: Series, ax=None):
+        """Plots box and whiskers chart for column."""
+        if ax is None:
+            sns.boxplot(column)
+        else:
+            sns.boxplot(column, ax=ax)
+       
+    def plot_box_whiskers_and_histogram(self, column: Series):
+        """Plots box, whiskers and histogram for column."""
+
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
+
+        self.box_and_whiskers(column, ax=ax1)  
+        self.histogram(column, 15, ax=ax2)
+        
+        plt.tight_layout()
+        plt.show()

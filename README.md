@@ -2,47 +2,67 @@
 
 # Table of contents 
 1. [Introduction](#introduction)
-1. [Installation](#installation)
+1. [Requirements](#requirements)
+1. [Installation & Usage](#installation-and-usage)
 1. [File structure](#file-structure)
 1. [License](#license)
 
 # Introduction 
 
-This is my first time maintaining a reasonably large Data Analytics project; from this I have been able to develop and consolidate several aspects of my programming skills. For example:
+This is my first time maintaining a reasonably large Data Analytics project. The project performs an exploratory data analysis on a dataset of customer loans. The goal is to gain insights into the data through visualizations and statistical analysis.
 
-- Working with pandas, seaborn and plotly (as well as numpy, missingno and pyYAML)
-- I gained more familiarity with Git: 
-    - I created a requirements.txt file for the first time 
-    - I wrote a README.md for my largest project to date
-- Worked on my first ever EDA project, going through the EDA lifecycle and constantly updating my approach to extract insights from the data 
+Some key points about the project:
 
-The bulk of the code is in the EDA.ipynb file, which is where the data analysis takes place. The other python files (except for `db_utils.py`) provide functions to assist the EDA file in its analysis. 
+- Uses Python libraries like Pandas, Seaborn, and Plotly to wrangle, visualize, and analyze the data
+- Follows the typical EDA workflow of data cleaning, exploration, visualization, and analysis
+- Outputs visualizations and summary statistics to extract insights and trends from the data
+
+Skills I improved during the project:
+
+- Developed coding skills in Python and Git version control
+- Created reusable modules for data transformation and plotting to improve code structure
+
+# Requirements 
+
+To run the Jupyter notebook, you will need:
+
+- Python 3.x
+- Jupyter Notebook/Lab installed
+- The Python libraries listed in requirements.txt
+
+You can then install the remaining project-specific dependencies using: `pip install -r requirements.txt`
+
+# Installation and Usage 
+
+The main analysis is contained in the Jupyter notebook `EDA.ipynb`. To use:
+
+- Clone this GitHub repository
+- Install dependencies listed in requirements.txt
+- Run the notebook EDA.ipynb
+
+Key files:
+
+- `data/loan_payments.csv`: Raw loan payment data
+- `src/`: EDA.ipynb, the main notebook, and modules containing reuseable code for data transformations, plotting, etc. 
 
 # File structure 
 ```
 .
-├── data_transform.py
-├── db_utils.py
-├── df_information.py
-├── df_transform.py
-├── EDA.ipynb
-├── plotter.py
+├── data/
+|   └── loan_payments.csv
+├── src/
+│   ├── data_transform.py 
+|   ├── db_utils.py
+│   ├── df_information.py
+│   ├── df_transform.py
+|   ├── EDA.ipynb
+│   └── plotter.py
+├── .gitignore
 ├── README.md
 └── requirements.txt
-
 ```
 
-# Installation 
-1. Clone the project to your local machine using `git clone https://github.com/HaarisSultan/exploratory-data-analysis---customer-loans-in-finance.git`
-2. Install the dependencies listed in `requirements.txt` using a package manager *(e.g. pip or brew)*
-
-I had to download the `loan_payments.csv` file for the data analysis by running `python db_utils.py` - which only works if you have a credentials.yaml file in the project directory. 
-
-For anyone wishing to run the project without the credentials file, I have simply added the `loan_payments.csv` file to the project, so the db_utils.py file is not needed. 
-
-3. Open the file EDA.ipynb click Run All  
-
-# Licence
+# License
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 

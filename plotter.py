@@ -132,11 +132,11 @@ class Plotter():
     def barplot(self, data: DataFrame, x: str, y: str):
         return sns.barplot(data, x=x, y=y)
     
-    def correlation_matrix(self, columns: DataFrame) -> DataFrame:
+    def correlation_matrix(self, data: DataFrame, title: str="Correlation matrix") -> DataFrame:
         """Computes and plots correlation matrix, and returns the numerical matrix."""
 
         # Compute the correlation matrix
-        corr = columns.corr()
+        corr = data.corr()
 
         # Generate a mask for the upper triangle
         mask = np.zeros_like(corr, dtype=np.bool_)
@@ -147,7 +147,7 @@ class Plotter():
         
         plt.figure(figsize=(10, 8)) 
         plt.yticks(rotation=0)
-        plt.title('Correlation Matrix')
+        plt.title(title)
         
         # Draw the heatmap
         sns.heatmap(corr, mask=mask, square=True, linewidths=.5, annot=True, cmap=cmap, fmt='.2f')
